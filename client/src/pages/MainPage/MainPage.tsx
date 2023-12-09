@@ -47,10 +47,10 @@ export const MainPage: FC<PropsWithChildren> = () => {
       profile.showGuardError();
       navigate("/auth/login");
     }
-    if (location.pathname.startsWith("/auth") && profile.user.id) {
+    if ((isAuthPage || isStartPage) && profile.user.id) {
       navigate("/courses");
     }
-  }, [profile, isGuardedRoute]);
+  }, [profile, isGuardedRoute, isAuthPage, isStartPage]);
 
   return (
     <>
