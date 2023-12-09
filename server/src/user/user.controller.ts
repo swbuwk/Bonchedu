@@ -28,6 +28,13 @@ export class UserController {
   }
 
   @ApiTags('User')
+  @ApiOperation({ summary: 'Получить рейтинг польхователей'})
+  @Get("/rating")
+  findByRating() {
+    return this.userService.findByRating();
+  }
+
+  @ApiTags('User')
   @ApiOperation({ summary: 'Получить информацию о своем аккаунте'})
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

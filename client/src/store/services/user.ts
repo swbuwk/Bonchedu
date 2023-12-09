@@ -6,9 +6,15 @@ export const userApi = createApi({
     reducerPath: "userApi",
     baseQuery: apiBaseQuery(),
     endpoints: (builder) => ({
-        getUsers: builder.query<User, undefined>({
+        getUsers: builder.query<User[], undefined>({
             query: () => ({
-                url: "/users",
+                url: "/user",
+                method: "GET"
+            })
+        }),
+        getRating: builder.query<User[], undefined>({
+            query: () => ({
+                url: "/user/rating",
                 method: "GET"
             })
         })
@@ -17,4 +23,5 @@ export const userApi = createApi({
 
 
 export const {
+    useGetRatingQuery
 } = userApi

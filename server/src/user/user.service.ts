@@ -64,6 +64,16 @@ export class UserService {
     return res;
   }
 
+  async findByRating() {
+    const res = await this.userRepository.find({
+      select: ['id', 'username', 'expirience', 'info'],
+      order: {
+        expirience: "DESC"
+      }
+    })
+    return res
+  }
+
   async findOne(id: string, options?: { isLite?: boolean }) {
     const res = await this.userRepository.findOne({
       where: { id },
