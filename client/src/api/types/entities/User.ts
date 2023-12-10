@@ -11,3 +11,10 @@ export interface User {
   avatarImage: string
   entityType: EntityType.user
 }
+
+export interface Friend extends User {
+  approved: boolean
+  creatorId: string
+  receiverId: string
+  requestId: string
+}

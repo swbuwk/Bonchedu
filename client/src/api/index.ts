@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export const Endpoints = {
-  api: "https://apibonch.hoa7mlishe.com/",
-  files: "https://apibonch.hoa7mlishe.com/files/"
+  api: "http://localhost:5000/",
+  files: "http://localhost:5000/files/"
 }
 
 export const api = axios.create({

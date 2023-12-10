@@ -8,6 +8,7 @@ import { FilesModule } from 'src/files/files.module';
 import {
   UserChapter,
   UserCourse,
+  UserFriendRequest,
   UserLesson,
 } from './entities/user-relation.entity';
 
@@ -17,7 +18,7 @@ import {
   imports: [
     RoleModule,
     FilesModule,
-    TypeOrmModule.forFeature([User, UserCourse, UserChapter, UserLesson]),
+    TypeOrmModule.forFeature([User, UserCourse, UserChapter, UserLesson, UserFriendRequest]),
   ],
   exports: [TypeOrmModule, UserService],
 })

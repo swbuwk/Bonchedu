@@ -9,6 +9,7 @@ async function bootstrap() {
     origin: "*"
   })
 
+
   const config = new DocumentBuilder()
     .setTitle('Bonchedu docs')
     .setVersion('1.0')

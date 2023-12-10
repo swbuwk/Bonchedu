@@ -3,17 +3,20 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { RoleService } from 'src/role/role.service';
 import { AddRoleDto } from './dto/add-role.dto';
 import { FilesService } from 'src/files/files.service';
 import { RequestUser } from 'src/types';
+import { UserFriendRequest } from './entities/user-relation.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(UserFriendRequest)
+    private userFriendRequestRepository: Repository<UserFriendRequest>,
     private roleService: RoleService,
     private filesService: FilesService,
   ) {}
@@ -57,11 +60,159 @@ export class UserService {
     return res;
   }
 
-  async findAll() {
-    const res = await this.userRepository.find({
-      select: ['id', 'username', 'expirience', 'info'],
-    });
-    return res;
+  async search(search: string, user?: RequestUser) {
+    if (search.length < 3) {
+      return []
+    }
+
+    if (!user) {
+      const res = await this.userRepository.find({
+        select: ['id', 'username', 'expirience', 'info'],
+        where: {
+          username: Like(`%${search}%`)
+        }
+      });
+      return res;
+    }
+
+    const res = await this.userRepository
+      .createQueryBuilder("user")
+      .select([
+        `CASE WHEN "userFriendRequest"."creatorId" = '${user.id}' OR "userFriendRequest"."receiverId" = '${user.id}'
+        THEN "userFriendRequest"."approved"
+        ELSE NULL
+        END AS approved`,
+        `CASE WHEN "userFriendRequest"."creatorId" = '${user.id}' OR "userFriendRequest"."receiverId" = '${user.id}'
+        THEN 1
+        ELSE 0
+        END AS "hasRelation"`,
+        `"userFriendRequest"."creatorId" AS "creatorId"`,
+        '"userFriendRequest"."receiverId" AS "receiverId"',
+        '"userFriendRequest"."id" AS "requestId"',
+        "user.id AS id",
+        "user.username AS username",
+        "user.expirience AS expirience",
+        "user.avatar AS avatar",
+      ])
+      .distinctOn(["id"])
+      .leftJoin("user_friend_request", "userFriendRequest", '"userFriendRequest"."creatorId" = user.id OR "userFriendRequest"."receiverId" = user.id')
+      .orderBy("id", "ASC")
+      .addOrderBy(`"hasRelation"`, "DESC")
+      .where(`user.id != :id AND user.username ILIKE '%${search}%'`, { id: user.id })
+      .getRawMany()
+
+    return res
+  }
+
+  
+  async sendFriendRequest(user: RequestUser, friendId: string) {
+    if (user.id === friendId) {
+      throw new HttpException("Нельзя добавить себя в друзья", HttpStatus.BAD_REQUEST)
+    }
+
+    const creator = await this.userRepository.findOne({
+      where: {id: user.id}
+    })
+
+    const receiver = await this.userRepository.findOne({
+      where: {id: friendId}
+    })
+
+    if (!creator || !receiver) {
+      throw new HttpException("Пользователя на существует", HttpStatus.NOT_FOUND)
+    }
+
+    const hasRequest = await this.hasRequest(creator, receiver)
+
+    if (hasRequest) {
+      throw new HttpException("Заявка уже существует", HttpStatus.BAD_REQUEST)
+    }
+
+    const friendRequestEntity = await this.userFriendRequestRepository.create({
+      creator,
+      receiver,
+      approved: false
+    })
+    await this.userFriendRequestRepository.save(friendRequestEntity)
+
+    return friendRequestEntity;
+  }
+
+  async hasRequest(
+    creator: User,
+    receiver: User
+  ) {
+    const candidate = await this.userFriendRequestRepository.findOne({
+      where: [
+        {creator, receiver},
+        {creator: receiver, receiver: creator}
+      ]
+    })
+
+    return !!candidate
+  }
+
+  async approveFriendRequest(user: RequestUser, requestId: string) {
+    const friendRequest = await this.userFriendRequestRepository.findOne({
+      where: {id: requestId},
+      relations: {
+        receiver: true
+      }
+    })
+
+    if (!friendRequest) {
+      throw new HttpException("Заявки не найдено", HttpStatus.BAD_REQUEST)
+    }
+
+    if (user.id !== friendRequest.receiver.id) {
+      throw new HttpException("Вы не являетесь получателем заявки", HttpStatus.BAD_REQUEST)
+    }
+
+    friendRequest.approved = true
+
+    await this.userFriendRequestRepository.save(friendRequest)
+
+    return friendRequest
+  }
+
+  async getFriends(user: RequestUser) {
+    const res = await this.userFriendRequestRepository
+      .createQueryBuilder("userFriendRequest")
+      .select([
+                `user.id AS id`, 
+                "user.username AS username",
+                "user.expirience AS expirience",
+                "user.avatar AS avatar",
+                '"userFriendRequest"."creatorId" AS "creatorId"',
+                '"userFriendRequest"."receiverId" AS "receiverId"',
+                '"userFriendRequest".approved AS approved',
+                '"userFriendRequest"."id" AS "requestId"',
+              ])
+      .innerJoin("user", "user", "user.id = userFriendRequest.creatorId OR user.id = userFriendRequest.receiverId")
+      .where("user.id != :id AND userFriendRequest.approved = true AND (userFriendRequest.creatorId = :id OR userFriendRequest.receiverId = :id)", { id: user.id })
+      .getRawMany()
+
+    return res
+  }
+
+  async getFriendRequests(user: RequestUser, outbox: boolean) {
+    const res = await this.userFriendRequestRepository
+      .createQueryBuilder("userFriendRequest")
+      .select([
+                `user.id AS id`, 
+                "user.username AS username",
+                "user.expirience AS expirience",
+                "user.avatar AS avatar",
+                '"userFriendRequest"."creatorId" AS "creatorId"',
+                '"userFriendRequest"."receiverId" AS "receiverId"',
+                '"userFriendRequest".approved AS approved',
+                '"userFriendRequest"."id" AS "requestId"',
+              ])
+      .innerJoin("user", "user", "user.id = userFriendRequest.creatorId OR user.id = userFriendRequest.receiverId")
+      .where(`userFriendRequest.${outbox ? "creatorId" : "receiverId"} = :id AND userFriendRequest.approved = false AND user.id != :id`, { id: user.id })
+      .getRawMany()
+
+    return res
   }
 
   async findByRating() {

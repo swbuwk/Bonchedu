@@ -20,12 +20,15 @@ import { FilesModule } from './files/files.module';
 import {
   UserChapter,
   UserCourse,
+  UserFriendRequest,
   UserLesson,
 } from './user/entities/user-relation.entity';
 import { User } from './user/entities/user.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.PG_HOST,
@@ -37,6 +40,7 @@ import { User } from './user/entities/user.entity';
         UserCourse,
         UserChapter,
         UserLesson,
+        UserFriendRequest,
         Role,
         Course,
         Lesson,

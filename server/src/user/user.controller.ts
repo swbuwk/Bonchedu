@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, UseInterceptors, UploadedFile, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, UseInterceptors, UploadedFile, Request, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -21,15 +21,17 @@ export class UserController {
   }
 
   @ApiTags('User')
-  @ApiOperation({ summary: 'Получить всех пользователей'})
+  @ApiOperation({ summary: 'Поиск пользователей'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  search(@Query("search") search: string, @Req() req: RequestWithUser) {
+    return this.userService.search(search, req.user);
   }
 
   @ApiTags('User')
-  @ApiOperation({ summary: 'Получить рейтинг польхователей'})
-  @Get("/rating")
+  @ApiOperation({ summary: 'Получить рейтинг пользователей'})
+  @Get("rating")
   findByRating() {
     return this.userService.findByRating();
   }
@@ -38,9 +40,27 @@ export class UserController {
   @ApiOperation({ summary: 'Получить информацию о своем аккаунте'})
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Get('/account')
+  @Get('account')
   getMyAccount(@Req() req: RequestWithUser) {
     return this.userService.findOne(req.user.id);
+  }
+  
+  @ApiTags('User')
+  @ApiOperation({ summary: 'Получить друзей'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get("friend")
+  getFriends(@Req() req: RequestWithUser) {
+    return this.userService.getFriends(req.user);
+  }
+
+  @ApiTags('User')
+  @ApiOperation({ summary: 'Получить заявки в друзья'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get("friend/requests")
+  getFriendRequests(@Req() req: RequestWithUser, @Query("type") type: string) {
+    return this.userService.getFriendRequests(req.user, type === "outbox");
   }
 
   @ApiTags('User')
@@ -49,6 +69,26 @@ export class UserController {
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
+
+
+  @ApiTags('User')
+  @ApiOperation({ summary: 'Отправить запрос на дружбу'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Post("friend/send-request/:id")
+  sendFriendRequest(@Req() req: RequestWithUser, @Param("id") friendId: string) {
+    return this.userService.sendFriendRequest(req.user, friendId);
+  }
+
+  @ApiTags('User')
+  @ApiOperation({ summary: 'Принять запрос дружбы'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Post("friend/approve-request/:id")
+  approveFriendRequest(@Req() req: RequestWithUser, @Param("id") requestId: string) {
+    return this.userService.approveFriendRequest(req.user, requestId);
+  }
+
 
   @ApiTags('User')
   @ApiOperation({ summary: 'Обновить пользователя'})
@@ -63,7 +103,7 @@ export class UserController {
   @ApiBody(uploadFileSchema)
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  @Post("uploadAvatar")
+  @Post("upload-avatar")
   uploadAvatar(@UploadedFile('file') file: Express.Multer.File, @Request() req: RequestWithUser) {
     return this.userService.uploadAvatar(file, req.user);
   }

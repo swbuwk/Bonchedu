@@ -93,3 +93,19 @@ export class UserLesson {
   @Column()
   lessonId: string;
 }
+
+
+@Entity('user_friend_request')
+export class UserFriendRequest {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+  
+  @Column({ default: false })
+  approved: boolean
+
+  @ManyToOne(() => User, user => user.sentFriendRequests)
+  creator: User
+
+  @ManyToOne(() => User, user => user.receivedFriendRequests)
+  receiver: User
+}

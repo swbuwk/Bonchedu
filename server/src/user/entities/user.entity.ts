@@ -8,7 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserChapter, UserCourse, UserLesson } from './user-relation.entity';
+import { UserChapter, UserCourse, UserFriendRequest, UserLesson } from './user-relation.entity';
 
 @Entity()
 export class User {
@@ -49,9 +49,11 @@ export class User {
   @JoinTable()
   roles: Role[];
 
-  @ManyToMany(() => User)
-  @JoinTable()
-  friends: User[];
+  @OneToMany(() => UserFriendRequest, (userFriendRequest) => userFriendRequest.creator)
+  sentFriendRequests: UserFriendRequest[]
+
+  @OneToMany(() => UserFriendRequest, (userFriendRequest) => userFriendRequest.receiver)
+  receivedFriendRequests: UserFriendRequest[]
 
   @Column({ nullable: true })
   avatar: string;

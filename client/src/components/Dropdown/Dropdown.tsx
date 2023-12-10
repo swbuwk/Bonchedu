@@ -51,7 +51,7 @@ export const Dropdown: FC<DropdownProps> = ({ options, target, closeOnChoose = f
   }
 
   return (
-    <DropdownWrapper onMouseLeave={() => console.log("aa")}>
+    <DropdownWrapper>
       <TargetWrapper onClick={toggleDropdownVisibility}>
         {target}
       </TargetWrapper>

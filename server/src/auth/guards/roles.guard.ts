@@ -5,7 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from '../constants';
 import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../role.decorator';
@@ -29,7 +28,7 @@ export class RolesGuard implements CanActivate {
     }
     try {
       const user = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
+        secret: process.env.JWT_SECRET,
       });
       request['user'] = user;
       return user.roles.some((role: any) => reqRoles.includes(role.name));
