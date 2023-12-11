@@ -49,7 +49,7 @@ export const LessonPreviewBlock: FC<LessonPreviewBlockProps> = ({ lesson, disabl
       })
     }
   >
-      <AddLessonTitle>Добавить задание</AddLessonTitle>
+      <AddLessonTitle>Добавить занятие</AddLessonTitle>
       <PlusIcon fill={Colors.blue} />
   </AddLessonButton>
 

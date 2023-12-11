@@ -26,7 +26,7 @@ export const LessonCompleted: FC<LessonCompletedProps> = ({
     <LessonCompletedWrapper>
       <LessonCompletedTitle>Занятие пройдено!</LessonCompletedTitle>
       <Precision>Результат: {Math.round(precision * 100)}%</Precision>
-      <Button onClick={handleGoToChapter}>Вернуться к заданиям</Button>
+      <Button onClick={handleGoToChapter}>Вернуться к занятиям</Button>
     </LessonCompletedWrapper>
   );
 };

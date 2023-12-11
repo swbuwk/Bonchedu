@@ -142,7 +142,7 @@ export class LessonService {
 
     if (progress + 1 < lesson.position) {
       throw new HttpException(
-        'Пройдите предыдущие задания',
+        'Пройдите предыдущие занятия',
         HttpStatus.BAD_REQUEST,
       );
     }

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { ProgressBarWrapper, ProgressTooltip, ProgressedZone } from "./styles";
+import { ProgressBarLine, ProgressBarWrapper, ProgressTooltip, ProgressedZone } from "./styles";
 
 interface ProgressBarProps {
   progress: number;
@@ -16,7 +16,9 @@ export const ProgressBar: FC<ProgressBarProps> = ({ progress, full }) => {
       ) : (
         <></>
       )}
-      <ProgressedZone width={full ? progress / full : 0} />
+      <ProgressBarLine>
+        <ProgressedZone width={full ? progress / full : 0} />
+      </ProgressBarLine>
     </ProgressBarWrapper>
   );
 };

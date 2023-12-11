@@ -32,6 +32,18 @@ export const ProgressBarWrapper = styled.div`
   }
 `;
 
+
+export const ProgressBarLine = styled.div`
+  position: absolute;
+  width: 100%;
+  border-radius: 15px;
+  background: ${Colors.lightgray};
+  height: 17px;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+`
+
 export const ProgressedZone = styled.div<{
   width?: number;
 }>`
