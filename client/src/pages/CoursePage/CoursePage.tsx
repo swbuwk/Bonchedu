@@ -25,16 +25,16 @@ import { useGetCourseChaptersQuery } from "../../store/services/chapter";
 export const CoursePage = () => {
   const { id: courseId } = useParams<{ id: string }>();
   const profile = useProfile();
-  const isAdmin = profile.hasRole(RoleName.ADMIN);
   const { data: course } = useGetCourseByIdQuery(courseId ?? "");
   const { data: chapters } = useGetCourseChaptersQuery(courseId ?? "");
+  const isOwner = profile.hasRole(RoleName.ADMIN) || (profile.hasRole(RoleName.TEACHER) && profile.user.id === course?.authorId);
   
   const [page, setPage] = useState(0);
 
   const maxPages = useMemo(() => {
     if (!chapters?.length) return 1;
-    return Math.ceil((chapters.length + (isAdmin ? 1 : 0)) / 4);
-  }, [chapters?.length, isAdmin]);
+    return Math.ceil((chapters.length + (isOwner ? 1 : 0)) / 4);
+  }, [chapters?.length, isOwner]);
 
   return (
     <CoursePageWrapper>
@@ -73,9 +73,10 @@ export const CoursePage = () => {
                 page={page}
                 rows={2}
                 columns={2}
+                allowedToAdd={isOwner}
                 itemProps={{
                   type: EntityType.chapter,
-                  items: [...chapters, ...(isAdmin ? [{} as Chapter] : [])],
+                  items: [...chapters, ...(isOwner ? [{} as Chapter] : [])],
                 }}
               />
             )}

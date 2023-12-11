@@ -28,6 +28,7 @@ export class ChapterService {
 
     const chapterEntity = this.chapterRepository.create({
       ...createChapterDto,
+      authorId: course.authorId,
       position: course?.chaptersCount + 1,
     });
     const chapter = await this.chapterRepository.save(chapterEntity);
@@ -57,7 +58,8 @@ export class ChapterService {
             'chapter.description AS description',
             'chapter.position AS position',
             'chapter."lessonsCount" AS "lessonsCount"',
-            'chapter.courseId AS "courseId"',
+            'chapter."courseId" AS "courseId"',
+            'chapter."authorId" AS "authorId"',
           ])
           .from("chapter", "chapter")
           .distinctOn(["id"])
@@ -102,7 +104,8 @@ export class ChapterService {
           'chapter.description AS description',
           'chapter.position AS position',
           'chapter."lessonsCount" AS "lessonsCount"',
-          'chapter.courseId AS "courseId"',
+          'chapter."courseId" AS "courseId"',
+          'chapter."authorId" AS "authorId"',
         ])
         .distinctOn(["id"])
         .leftJoin(

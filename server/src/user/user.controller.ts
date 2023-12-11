@@ -8,6 +8,7 @@ import { RequestWithUser } from 'src/types';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { uploadFileSchema } from 'src/swagger/schemas';
+import { RemoveRoleDto } from 'src/user/dto/remove-role.dto';
 
 @Controller('user')
 export class UserController {
@@ -18,6 +19,13 @@ export class UserController {
   @Post(':id/role')
   addRole(@Param('id') id: string, @Body() addRoleDto: AddRoleDto) {
     return this.userService.addRole(id, addRoleDto);
+  }
+
+  @ApiTags('User')
+  @ApiOperation({ summary: 'Удалить роль у пользователю'})
+  @Delete(':id/role')
+  removeRole(@Param('id') id: string, @Body() removeRoleDto: RemoveRoleDto) {
+    return this.userService.removeRole(id, removeRoleDto);
   }
 
   @ApiTags('User')

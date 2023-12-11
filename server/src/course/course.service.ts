@@ -55,7 +55,7 @@ export class CourseService {
         'course.description AS description',
         'course."lessonsCount" AS "lessonsCount"',
         'course."chaptersCount" AS "chaptersCount"',
-        'course.authorId AS "authorId"',
+        'course."authorId" AS "authorId"',
         'course.coverImage AS "coverImage"',
         'course.created_at AS created_at',
       ])
@@ -86,7 +86,7 @@ export class CourseService {
           'course.description AS description',
           'course."lessonsCount" AS "lessonsCount"',
           'course."chaptersCount" AS "chaptersCount"',
-          'course.authorId AS "authorId"',
+          'course."authorId" AS "authorId"',
           'course.coverImage AS "coverImage"',
           'course.created_at AS created_at',
         ])

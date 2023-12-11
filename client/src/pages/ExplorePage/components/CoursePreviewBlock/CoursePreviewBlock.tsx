@@ -46,7 +46,7 @@ export const CoursePreviewBlock: FC<CoursePreviewBlockProps> = ({
   const modal = useModal();
   const toasts = useToasts();
   const profile = useProfile()
-  const isAdmin = profile.hasRole(RoleName.ADMIN)
+  const isOwner = profile.hasRole(RoleName.ADMIN) || (profile.hasRole(RoleName.TEACHER) && profile.user.id === course?.authorId);
   const navigate = useNavigate();
   const [deleteCourse] = useDeleteCourseMutation();
   const [getCourses] = useLazyGetCoursesQuery();
@@ -71,7 +71,7 @@ export const CoursePreviewBlock: FC<CoursePreviewBlockProps> = ({
   };
 
   const dropdownOptions: DropdownOption[] = [
-    ...(isAdmin ? [{
+    ...(isOwner ? [{
       action: openCourseDeleteModal,
       element: (
         <CourseDeleteButton>

@@ -1,10 +1,13 @@
 import { FC, useMemo } from 'react'
 import { Friend } from '../../../../api/types/entities/User'
-import { UserAvatar, UserInfokName, UserItemLeft, UserItemWrapper } from './styles'
+import { UserAvatar, UserInfokName, UserItemLeft, UserItemRight, UserItemWrapper } from './styles'
 import { useProfile } from '../../../../hooks/useProfile'
 import Button from '../../../../components/Button'
-import { useApproveFriendRequestMutation, useSendFriendRequestMutation } from '../../../../store/services/user'
+import { useAddRoleMutation, useApproveFriendRequestMutation, useRemoveRoleMutation, useSendFriendRequestMutation } from '../../../../store/services/user'
 import { useToasts } from '../../../../hooks/useToasts'
+import { RoleName } from '../../../../api/types/entities/Role'
+import Dropdown from '../../../../components/Dropdown'
+import { DropdownButtonTarget } from '../../../../components/Dropdown/DropdownButtonTarget'
 
 interface FriendItemProps {
   friend: Friend
@@ -13,9 +16,15 @@ interface FriendItemProps {
 
 export const FriendItem: FC<FriendItemProps> = ({friend, refetch}) => {
   const profile = useProfile()
+  const isAdmin = profile.hasRole(RoleName.ADMIN)
   const toasts = useToasts()
   const [sendFriendRequest] = useSendFriendRequestMutation()
   const [approveFriendRequest] = useApproveFriendRequestMutation()
+  const [addRole] = useAddRoleMutation()
+  const [removeRole] = useRemoveRoleMutation()
+
+  const isUserTeacher = friend?.roles?.find?.((role) => role.name === RoleName.TEACHER)
+  const isUserAdmin = friend?.roles?.find?.((role) => role.name === RoleName.ADMIN)
 
   const buttonStatus = useMemo(() => {
     if (friend.approved === null) return "Добавить в друзья"
@@ -45,19 +54,51 @@ export const FriendItem: FC<FriendItemProps> = ({friend, refetch}) => {
     }
   }
 
+  
+  const handleToggleTeacher = async () => {
+    if (isUserTeacher) {
+      await removeRole({
+        userId: friend.id,
+        roleName: RoleName.TEACHER
+      })
+      refetch()
+      toasts.success("Преподаватель разжалован")
+      return
+    }
+    await addRole({
+      userId: friend.id,
+      roleName: RoleName.TEACHER
+    })
+    refetch()
+    toasts.success("Пользователь назначен преподавателем")
+  }
+
+  const dropdownOptions = [{
+    element: <>{!isUserTeacher ? "Назначить преподавателем" : "Разжаловать преподавателя"}</>,
+    action: handleToggleTeacher
+  }]
+
   return (
     <UserItemWrapper>
       <UserItemLeft>
         <UserAvatar/> 
         <UserInfokName>{friend.username}</UserInfokName>
       </UserItemLeft>
-      {(profile.user.id !== friend.id) ? 
-        <Button 
-          resizable 
-          whiteTheme={buttonDisabled}
-          disabled={buttonDisabled}
-          onClick={handleButtonClick}
-        >{buttonStatus}</Button> : <></>}
+      <UserItemRight>
+        {(isAdmin && !isUserAdmin) ? 
+          <Dropdown
+            closeOnChoose
+            target={<DropdownButtonTarget/>}
+            options={dropdownOptions}
+          /> : <></>}
+        {(profile.user.id !== friend.id) ? 
+          <Button 
+            resizable 
+            whiteTheme={buttonDisabled}
+            disabled={buttonDisabled}
+            onClick={handleButtonClick}
+          >{buttonStatus}</Button> : <></>}
+      </UserItemRight>
     </UserItemWrapper>
   )
 }

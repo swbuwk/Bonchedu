@@ -14,10 +14,11 @@ export const TargetWrapper = styled.div`
 
 export const DropdownList = styled.div<{
   isVisible: boolean
+  top: number
 }>`
   position: absolute;
   pointer-events: none;
-  top: 38px;
+  top: ${p => p.top}px;
   border-radius: 15px;
   border: 1px solid ${Colors.lightgray};
   background-color: ${Colors.white};
@@ -36,6 +37,8 @@ export const DropdownItem = styled.div`
   padding: 12px 24px;
   background-color: ${Colors.white};
   transition: 0.2s;
+  text-align: center;
+  white-space: nowrap;
 
   &:hover {
     background-color: ${Colors.lightgray};
@@ -60,4 +63,15 @@ export const DropdownDot = styled.div`
   height: 5px;
   border-radius: 50%;
   background-color: ${Colors.gray};
+`
+
+export const DropdownButtonTargetWrapper = styled.div`
+  cursor: pointer;
+  padding: 10px 18px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px ${Colors.gray};  
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background-color: #fff;
 `

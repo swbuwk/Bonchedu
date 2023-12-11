@@ -6,6 +6,7 @@ export interface Lesson {
   name: string;
   difficulty: Difficulties;
   expirience: number;
+  authorId: string
   position: number;
   chapter?: Chapter;
   chapterId: string;

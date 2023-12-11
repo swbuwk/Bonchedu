@@ -9,6 +9,9 @@ export class Task {
     // @Column()
     // type: string
 
+    @Column()
+    authorId: string
+
     @ManyToOne(() => Lesson, (lesson) => lesson.tasks, {
         onDelete: "CASCADE"
     })

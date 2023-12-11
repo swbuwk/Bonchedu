@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { apiBaseQuery } from "../../api/baseQuery";
 import { Friend, User } from "../../api/types/entities/User";
+import { AddRoleRequest, RemoveRoleRequest } from "../../api/types/UserApiTypes";
 
 export const userApi = createApi({
     reducerPath: "userApi",
@@ -48,6 +49,24 @@ export const userApi = createApi({
                 method: "POST"
             })
         }),
+        addRole: builder.mutation<User, AddRoleRequest>({
+            query: ({roleName, userId}) => ({
+                url: `/user/${userId}/role`,
+                method: "POST",
+                data: {
+                    roleName
+                }
+            })
+        }),
+        removeRole: builder.mutation<User, RemoveRoleRequest>({
+            query: ({roleName, userId}) => ({
+                url: `/user/${userId}/role`,
+                method: "DELETE",
+                data: {
+                    roleName
+                }
+            })
+        })
     })
 })
 
@@ -57,5 +76,7 @@ export const {
     useLazyGetFriendRequestsQuery,
     useSendFriendRequestMutation,
     useApproveFriendRequestMutation,
+    useAddRoleMutation,
+    useRemoveRoleMutation,
     useLazySearchUsersQuery
 } = userApi

@@ -11,8 +11,6 @@ import { EntityType } from "../../api/types/EntityType";
 import { Chapter } from "../../api/types/entities/Chapter";
 import { Course } from "../../api/types/entities/Course";
 import { useWindowResize } from "../../hooks/useWindowResize";
-import { useProfile } from "../../hooks/useProfile";
-import { RoleName } from "../../api/types/entities/Role";
 import ChapterPreviewBlock from "../../pages/CoursePage/components/ChapterPreviewBlock";
 
 interface CourseCarouselProps {
@@ -32,6 +30,7 @@ interface CarouselProps {
   page: number;
   columns?: number;
   rows?: number;
+  allowedToAdd?: boolean
 }
 
 export const Carousel: FC<CarouselProps> = ({
@@ -39,11 +38,10 @@ export const Carousel: FC<CarouselProps> = ({
   page,
   columns = 1,
   rows = 1,
+  allowedToAdd = false
 }) => {
   const { type: itemType, items, onItemHover } = itemProps;
   const [width] = useWindowResize();
-  const profile = useProfile();
-  const isAdmin = profile.hasRole(RoleName.ADMIN);
 
   const carouselW = useMemo(() => {
     return width * 0.925 - 370;
@@ -80,8 +78,7 @@ export const Carousel: FC<CarouselProps> = ({
                           : () => {}
                       }
                       isAddButton={
-                        idx * columns * rows + idx2 === items.length - 1 &&
-                        isAdmin
+                        idx * columns * rows + idx2 === items.length - 1 && allowedToAdd
                       }
                     />
                   </CarouselItemWrapper>
@@ -91,8 +88,7 @@ export const Carousel: FC<CarouselProps> = ({
                     <ChapterPreviewBlock
                       chapter={chapter as Chapter}
                       isAddButton={
-                        idx * columns * rows + idx2 === items.length - 1 &&
-                        isAdmin
+                        idx * columns * rows + idx2 === items.length - 1 && allowedToAdd
                       }
                     />
                   </CarouselItemWrapper>

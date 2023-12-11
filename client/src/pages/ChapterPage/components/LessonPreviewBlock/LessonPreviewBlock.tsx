@@ -27,7 +27,7 @@ export const LessonPreviewBlock: FC<LessonPreviewBlockProps> = ({ lesson, disabl
   const navigate = useNavigate()
   const [startLesson] = useStartLessonMutation()
   const [expanded, setExpanded] = useState<boolean>(false)
-  const isAdmin = profile.hasRole(RoleName.ADMIN)
+  const isOwner = profile.hasRole(RoleName.ADMIN) || (profile.hasRole(RoleName.TEACHER) && profile.user.id === lesson?.authorId);
 
   const handleLessonStart = async () => {
     let isError = false
@@ -62,7 +62,7 @@ export const LessonPreviewBlock: FC<LessonPreviewBlockProps> = ({ lesson, disabl
       <LessonRightSide>
         <Button disabled={disabled} onClick={() => setExpanded(p => !p)} whiteTheme>Информация</Button>
         <Button disabled={disabled} resizable onClick={handleLessonStart} >{lesson.completed ? "Перепройти" : "Начать"}</Button>
-        {isAdmin && <Button whiteTheme onClick={() => navigate(`/lessons/${lesson.id}/edit`)}><EditIcon w="24px"/></Button>}
+        {isOwner && <Button whiteTheme onClick={() => navigate(`/lessons/${lesson.id}/edit`)}><EditIcon w="24px"/></Button>}
       </LessonRightSide>
     </LessonBlockWrapper>
     <AdditionalInfo>

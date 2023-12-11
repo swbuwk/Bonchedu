@@ -22,6 +22,9 @@ export class Chapter {
   @Column({ nullable: true })
   description?: string;
 
+  @Column()
+  authorId: string;
+
   @OneToMany(() => Lesson, (lesson) => lesson.chapter, { onDelete: 'CASCADE' })
   lessons: Lesson[];
 

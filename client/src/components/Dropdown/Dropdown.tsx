@@ -1,4 +1,4 @@
-import { FC, MouseEvent, ReactNode, useRef, useState } from "react"
+import { FC, MouseEvent, ReactNode, useMemo, useRef, useState } from "react"
 import { DropdownItem, DropdownList, DropdownWrapper, TargetWrapper } from "./styles"
 
 export interface DropdownOption {
@@ -16,6 +16,7 @@ export const Dropdown: FC<DropdownProps> = ({ options, target, closeOnChoose = f
   const [isVisible, setIsVisible] = useState<boolean>(false)
   const [lock, setLock] = useState<boolean>(false)
   const listRef = useRef<HTMLDivElement | null>(null)
+  const targetWrapperRef = useRef<HTMLDivElement | null>(null)
 
   const handleOptionClick = (e: MouseEvent, action: () => void) => {
     if (!closeOnChoose) {
@@ -50,12 +51,17 @@ export const Dropdown: FC<DropdownProps> = ({ options, target, closeOnChoose = f
     setTimeout(() => listRef.current && (listRef.current.style.opacity = "1"))
   }
 
+  const listOffsetTop = useMemo(() => {
+    if (!targetWrapperRef.current) return 0
+    return targetWrapperRef.current.clientHeight + 10
+  }, [targetWrapperRef.current])
+
   return (
     <DropdownWrapper>
-      <TargetWrapper onClick={toggleDropdownVisibility}>
+      <TargetWrapper ref={targetWrapperRef} onClick={toggleDropdownVisibility}>
         {target}
       </TargetWrapper>
-      <DropdownList ref={listRef} isVisible={isVisible}>
+      <DropdownList top={listOffsetTop} ref={listRef} isVisible={isVisible}>
         {options.map((opt, idx) => (
           <DropdownItem key={idx} onClick={e => handleOptionClick(e, opt.action)}>
             {opt.element}

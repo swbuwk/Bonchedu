@@ -22,14 +22,14 @@ import { RoleName } from "../../api/types/entities/Role";
 export const ExplorePage = () => {
   const { data: courses } = useGetCoursesQuery(undefined);
   const profile = useProfile();
-  const isAdmin = profile.hasRole(RoleName.ADMIN);
+  const isAdminOrTeacher = profile.hasRole(RoleName.ADMIN) || profile.hasRole(RoleName.TEACHER);
   const [topImage, setTopImage] = useState<string>("");
   const [page, setPage] = useState(0);
   const [courseColumns] = useState<number>(4);
   const maxPages = useMemo(() => {
     if (!courses?.length) return 1;
-    return Math.ceil((courses.length + (isAdmin ? 1 : 0)) / courseColumns);
-  }, [courses?.length, isAdmin]);
+    return Math.ceil((courses.length + (isAdminOrTeacher ? 1 : 0)) / courseColumns);
+  }, [courses?.length, isAdminOrTeacher]);
 
   useEffect(() => {
     setPage(0);
@@ -67,9 +67,10 @@ export const ExplorePage = () => {
                 page={page}
                 rows={1}
                 columns={courseColumns}
+                allowedToAdd={isAdminOrTeacher}
                 itemProps={{
                   type: EntityType.course,
-                  items: [...courses, ...(isAdmin ? [{} as Course] : [])],
+                  items: [...courses, ...(isAdminOrTeacher ? [{} as Course] : [])],
                   onItemHover(item) {
                     setTopImage(item.coverImage);
                   },

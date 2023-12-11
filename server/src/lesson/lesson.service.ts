@@ -34,6 +34,7 @@ export class LessonService {
 
     const lessonEntity = this.lessonRepository.create({
       ...createLessonDto,
+      authorId: chapter.authorId,
       position: chapter?.lessonsCount + 1,
     });
     const lesson = await this.lessonRepository.save(lessonEntity);
@@ -64,7 +65,8 @@ export class LessonService {
             'lesson.expirience AS expirience',
             'lesson.position AS position',
             'lesson.courseId AS "courseId"',
-            'lesson.chapterId AS "chapterId"',
+            'lesson."chapterId" AS "chapterId"',
+            'lesson."authorId" AS "authorId"',
           ])
           .distinctOn(["id"])
           .from("lesson", "lesson")
@@ -109,7 +111,8 @@ export class LessonService {
           'lesson.expirience AS expirience',
           'lesson.position AS position',
           'lesson.courseId AS "courseId"',
-          'lesson.chapterId AS "chapterId"',
+          'lesson."chapterId" AS "chapterId"',
+          'lesson."authorId" AS "authorId"',
         ])
         .distinctOn(["id"])
         .leftJoin(

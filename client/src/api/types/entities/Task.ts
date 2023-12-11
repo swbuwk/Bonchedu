@@ -5,6 +5,7 @@ export interface Task {
   id: string
   question: string
   type: string
+  authorId: string
   lesson?: Lesson
   lessonId: string
   rightAnswerId: string

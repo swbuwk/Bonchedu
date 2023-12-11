@@ -3,6 +3,19 @@ import { SignInRequest, SignUpRequest } from "../api/types/UserApiTypes"
 import { getProfile, setGuardErrorVisibility, signIn, signOut, signUp } from "../store/slices/profileSlice"
 import { useAppDispatch, useAppSelector } from "./redux"
 import { RoleName } from "../api/types/entities/Role"
+import { courseApi } from "../store/services/course"
+import { lessonApi } from "../store/services/lessons"
+import { userApi } from "../store/services/user"
+import { chapterApi } from "../store/services/chapter"
+import { taskApi } from "../store/services/task"
+
+const apis = [
+  courseApi,
+  chapterApi,
+  lessonApi,
+  userApi,
+  taskApi
+]
 
 export const useProfile = () => {
   const profile = useAppSelector(state => state.profile)
@@ -17,6 +30,9 @@ export const useProfile = () => {
   }
 
   const logout = () => {
+    apis.forEach(api => {
+      dispatch(api.util.resetApiState())
+    })
     return dispatch(signOut())
   }
 

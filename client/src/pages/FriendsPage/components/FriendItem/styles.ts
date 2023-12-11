@@ -19,6 +19,12 @@ export const UserItemLeft = styled.div`
   gap: 16px;
 `
 
+export const UserItemRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`
+
 export const UserAvatar = styled.div`
   width: 64px;
   height: 64px;

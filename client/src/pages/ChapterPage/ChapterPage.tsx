@@ -19,9 +19,9 @@ import { RoleName } from "../../api/types/entities/Role";
 
 export const ChapterPage = () => {
   const profile = useProfile();
-  const isAdmin = profile.hasRole(RoleName.ADMIN);
   const { id: chapterId } = useParams<{ id: string }>();
   const { data: chapter } = useGetChapterByIdQuery(chapterId ? chapterId : "");
+  const isOwner = profile.hasRole(RoleName.ADMIN) || (profile.hasRole(RoleName.TEACHER) && profile.user.id === chapter?.authorId);
   const { data: lessons } = useGetChapterLessonsQuery(
     chapterId ? chapterId : ""
   );
@@ -45,12 +45,12 @@ export const ChapterPage = () => {
       <ContentBlock h="100%">
         <LessonsList>
           {lessons &&
-            [...lessons, ...(isAdmin ? [{} as Lesson] : [])]?.map(
+            [...lessons, ...(isOwner ? [{} as Lesson] : [])]?.map(
               (lesson, idx) => (
                 <LessonPreviewBlock
                   lesson={lesson}
                   disabled={idx > Number(chapter?.progress)}
-                  isAddButton={idx === lessons.length && isAdmin}
+                  isAddButton={idx === lessons.length && isOwner}
                 />
               )
             )}

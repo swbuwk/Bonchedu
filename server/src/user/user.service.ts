@@ -9,6 +9,7 @@ import { AddRoleDto } from './dto/add-role.dto';
 import { FilesService } from 'src/files/files.service';
 import { RequestUser } from 'src/types';
 import { UserFriendRequest } from './entities/user-relation.entity';
+import { RemoveRoleDto } from 'src/user/dto/remove-role.dto';
 
 @Injectable()
 export class UserService {
@@ -38,7 +39,7 @@ export class UserService {
   }
 
   async addRole(id: string, addRoleDto: AddRoleDto) {
-    const newRole = await this.roleService.findByName('USER');
+    const newRole = await this.roleService.findByName(addRoleDto.roleName);
     const entity = await this.userRepository.findOne({
       where: { id },
       relations: {
@@ -56,6 +57,31 @@ export class UserService {
     const res = await this.userRepository.save({
       ...entity,
       roles: [...entity.roles, newRole],
+    });
+    return res;
+  }
+
+  async removeRole(id: string, removeRoleDto: RemoveRoleDto) {
+    const roleToDelete = await this.roleService.findByName(removeRoleDto.roleName);
+    const entity = await this.userRepository.findOne({
+      where: { id },
+      relations: {
+        roles: true,
+      },
+    });
+
+    if (!entity || !roleToDelete) {
+      throw new HttpException(
+        'Неизвестная ошибка',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    const newRoles = entity.roles.filter(role => role.id !== roleToDelete.id)
+
+    const res = await this.userRepository.save({
+      ...entity,
+      roles: newRoles,
     });
     return res;
   }
@@ -86,6 +112,8 @@ export class UserService {
         THEN 1
         ELSE 0
         END AS "hasRelation"`,
+        'user.id || role.name AS "roleAndId"',
+        'role.name AS "roleName"',
         `"userFriendRequest"."creatorId" AS "creatorId"`,
         '"userFriendRequest"."receiverId" AS "receiverId"',
         '"userFriendRequest"."id" AS "requestId"',
@@ -94,14 +122,16 @@ export class UserService {
         "user.expirience AS expirience",
         "user.avatar AS avatar",
       ])
-      .distinctOn(["id"])
+      .distinctOn(['"roleAndId"'])
       .leftJoin("user_friend_request", "userFriendRequest", '"userFriendRequest"."creatorId" = user.id OR "userFriendRequest"."receiverId" = user.id')
-      .orderBy("id", "ASC")
+      .leftJoin("user_roles_role", "userRole", '"userRole"."userId" = user.id')
+      .leftJoin("role", "role", '"userRole"."roleId" = role.id')
+      .orderBy('"roleAndId"', "ASC")
       .addOrderBy(`"hasRelation"`, "DESC")
       .where(`user.id != :id AND user.username ILIKE '%${search}%'`, { id: user.id })
       .getRawMany()
 
-    return res
+    return this.normalizeUserRoles(res)
   }
 
   
@@ -187,12 +217,35 @@ export class UserService {
                 '"userFriendRequest"."receiverId" AS "receiverId"',
                 '"userFriendRequest".approved AS approved',
                 '"userFriendRequest"."id" AS "requestId"',
+                'role.name AS "roleName"',
               ])
       .innerJoin("user", "user", "user.id = userFriendRequest.creatorId OR user.id = userFriendRequest.receiverId")
+      .leftJoin("user_roles_role", "userRole", '"userRole"."userId" = user.id')
+      .leftJoin("role", "role", '"userRole"."roleId" = role.id')
       .where("user.id != :id AND userFriendRequest.approved = true AND (userFriendRequest.creatorId = :id OR userFriendRequest.receiverId = :id)", { id: user.id })
       .getRawMany()
 
-    return res
+    return this.normalizeUserRoles(res)
+  }
+
+  async normalizeUserRoles(users: any[]) {
+    const normalizedUsers: any[] = []
+    const userIds: string[] = []
+
+    users.forEach(user => {
+      const {roleAndId, roleName, ...newUser} = user
+      if (!userIds.includes(user.id)) {
+        normalizedUsers.push({
+          ...newUser,
+          roles: [{name: roleName}]
+        })
+        userIds.push(user.id)
+        return
+      }
+      normalizedUsers.find(us => us.id === user.id).roles.push({name: roleName})
+    })
+
+    return normalizedUsers
   }
 
   async getFriendRequests(user: RequestUser, outbox: boolean) {
@@ -207,12 +260,15 @@ export class UserService {
                 '"userFriendRequest"."receiverId" AS "receiverId"',
                 '"userFriendRequest".approved AS approved',
                 '"userFriendRequest"."id" AS "requestId"',
+                'role.name AS "roleName"',
               ])
       .innerJoin("user", "user", "user.id = userFriendRequest.creatorId OR user.id = userFriendRequest.receiverId")
+      .leftJoin("user_roles_role", "userRole", '"userRole"."userId" = user.id')
+      .leftJoin("role", "role", '"userRole"."roleId" = role.id')
       .where(`userFriendRequest.${outbox ? "creatorId" : "receiverId"} = :id AND userFriendRequest.approved = false AND user.id != :id`, { id: user.id })
       .getRawMany()
 
-    return res
+    return this.normalizeUserRoles(res)
   }
 
   async findByRating() {

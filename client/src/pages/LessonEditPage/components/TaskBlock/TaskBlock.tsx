@@ -32,7 +32,7 @@ interface TaskBlockProps {
 export const TaskBlock: FC<TaskBlockProps> = ({ task, isAddButton }) => {
   const { id: lessonId } = useParams<{ id: string }>();
   const profile = useProfile();
-  const isAdmin = profile.hasRole(RoleName.ADMIN);
+  const isOwner = profile.hasRole(RoleName.ADMIN) || (profile.hasRole(RoleName.TEACHER) && profile.user.id === task?.authorId);
   const [addTask] = useAddTaskMutation();
   const [deleteTask] = useDeleteTaskMutation();
   const [updateTask] = useUpdateTaskMutation();
@@ -99,7 +99,7 @@ export const TaskBlock: FC<TaskBlockProps> = ({ task, isAddButton }) => {
         />
         <QuestionDivider />
         {task.answers &&
-          [...task.answers, ...(isAdmin ? [{} as Answer] : [])].map(
+          [...task.answers, ...(isOwner ? [{} as Answer] : [])].map(
             (answer, idx) => (
               <AnswerEditable
                 key={answer.id}
@@ -107,7 +107,7 @@ export const TaskBlock: FC<TaskBlockProps> = ({ task, isAddButton }) => {
                 lessonId={task.lessonId}
                 answer={answer}
                 isRightAnswer={answer.id === task.rightAnswerId}
-                isAddButton={isAdmin && idx === task.answers.length}
+                isAddButton={isOwner && idx === task.answers.length}
               />
             )
           )}
