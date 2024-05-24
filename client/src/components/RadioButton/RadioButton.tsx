@@ -3,12 +3,12 @@ import { RadioButtonItem, RadioButtonWrapper } from "./styles"
 
 export interface IRadioButtonItem {
   name: string
-  id: number
+  id: string
 }
 
 interface RadioButtonProps {
   items: IRadioButtonItem[]
-  activeId: number
+  activeId: string
   onSelect: (item: IRadioButtonItem) => void
 }
 

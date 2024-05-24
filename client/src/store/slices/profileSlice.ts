@@ -4,6 +4,7 @@ import { SignInRequest, SignInResponse, SignUpRequest, SignUpResponse } from "..
 import { api } from "../../api"
 import { ApiError, ApiErrorData } from "../../api/baseQuery"
 import { EntityType } from "../../api/types/EntityType"
+import { Role } from "../../api/types/entities/Role"
 
 interface Profile {
   user: User,
@@ -15,12 +16,11 @@ interface Profile {
 const initialState: Profile = {
   user: {
     id: "",
-    info: "",
-    login: "",
-    roles: [],
+    personalInfo: "",
+    role: Role.student,
     username: "",
     expirience: 0,
-    avatarImage: "",
+    avatarID: "",
     entityType: EntityType.user
   },
   loading: true,
@@ -38,7 +38,7 @@ export const signUp = createAsyncThunk<
   "profile/signup",
   async (signUpRequest: SignUpRequest, { rejectWithValue }) => {
     const res: SignUpResponse = await api({
-      url: "/auth/signup",
+      url: "/api/Users",
       method: "POST",
       data: signUpRequest
     }).then(res => res.data)
@@ -60,7 +60,7 @@ export const signIn = createAsyncThunk<
   "profile/signin",
   async (signInRequest: SignInRequest, { rejectWithValue }) => {
     const res: SignInResponse = await api({
-      url: "/auth/signin",
+      url: "/api/Users/login",
       method: "POST",
       data: signInRequest
     }).then(res => res.data)
@@ -82,7 +82,7 @@ export const getProfile = createAsyncThunk<
   "profile/getInfo",
   async (_, { rejectWithValue }) => {
     const res: User = await api({
-      url: "/user/account",
+      url: "/api/Users",
       method: "GET",
     }).then(res => res.data)
     .catch((error: ApiError) => {
@@ -98,7 +98,7 @@ const profileSlice = createSlice({
   initialState,
   reducers: {
     signOut: () => {
-      localStorage.setItem("access_token", "")
+      localStorage.setItem("accessToken", "")
       return {...initialState, loading: false}
     },
     setGuardErrorVisibility(state, action: PayloadAction<boolean>) {
@@ -107,8 +107,8 @@ const profileSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(signUp.fulfilled, (state, action) => {
-      const {access_token, ...user} = action.payload
-      localStorage.setItem("access_token", access_token)
+      const {tokens, ...user} = action.payload
+      localStorage.setItem("accessToken", tokens.accessToken)
       state.user = user
       state.guardErrorVisible = false
       state.error = null
@@ -124,8 +124,8 @@ const profileSlice = createSlice({
       state.loading = false
     })
     builder.addCase(signIn.fulfilled, (state, action) => {
-      const {access_token, ...user} = action.payload
-      localStorage.setItem("access_token", access_token)
+      const {tokens, ...user} = action.payload
+      localStorage.setItem("accessToken", tokens.accessToken)
       state.user = user
       state.guardErrorVisible = false
       state.error = null

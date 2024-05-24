@@ -1,5 +1,5 @@
 export interface AddCourseRequest {
-  file: Blob | null
+  cover: Blob | null
   name: string
   description: string
 }

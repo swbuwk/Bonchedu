@@ -11,23 +11,24 @@ export const courseApi = createApi({
     endpoints: (builder) => ({
         getCourses: builder.query<Course[], undefined>({
             query: () => ({
-                url: "/course",
+                url: "api/Courses",
                 method: "GET"
             }),
             transformResponse: (response: Course[]) => response.map(course => ({ ...course, entityType: EntityType.course }))
         }),
         getCourseById: builder.query<Course, string>({
             query: (id: string) => ({
-                url: `/course/${id}`,
+                url: `api/Courses/${id}`,
                 method: "GET"
             }),
         }),
         addCourse: builder.mutation<Course, AddCourseRequest>({
             query: (data) => {
                 const formData = generateFormData(data)
+                console.log(formData)
 
                 return {
-                    url: "/course",
+                    url: "api/Courses",
                     method: "POST",
                     data: formData,
                 }
@@ -37,7 +38,7 @@ export const courseApi = createApi({
             query: (id) => {
 
                 return {
-                    url: `/course/${id}`,
+                    url: `api/Courses/${id}`,
                     method: "DELETE",
                 }
             },

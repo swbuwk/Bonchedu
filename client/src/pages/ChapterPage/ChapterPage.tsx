@@ -15,13 +15,13 @@ import { useGetChapterLessonsQuery } from "../../store/services/lessons";
 import LessonPreviewBlock from "./components/LessonPreviewBlock";
 import { Lesson } from "../../api/types/entities/Lesson";
 import { useProfile } from "../../hooks/useProfile";
-import { RoleName } from "../../api/types/entities/Role";
+import { Role } from "../../api/types/entities/Role";
 
 export const ChapterPage = () => {
   const profile = useProfile();
   const { id: chapterId } = useParams<{ id: string }>();
   const { data: chapter } = useGetChapterByIdQuery(chapterId ? chapterId : "");
-  const isOwner = profile.hasRole(RoleName.ADMIN) || (profile.hasRole(RoleName.TEACHER) && profile.user.id === chapter?.authorId);
+  const isOwner = profile.hasRole(Role.admin) || (profile.hasRole(Role.teacher) && profile.user.id === chapter?.authorId);
   const { data: lessons } = useGetChapterLessonsQuery(
     chapterId ? chapterId : ""
   );
@@ -32,7 +32,7 @@ export const ChapterPage = () => {
         <ChaptreInfoWrapper>
           <ChapterTextWrapper>
             <ChapterNumberBig>
-              {beautifyPos(chapter?.position)}
+              {beautifyPos(chapter?.number)}
             </ChapterNumberBig>
             <ChapterTitle>{chapter?.name}</ChapterTitle>
           </ChapterTextWrapper>

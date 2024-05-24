@@ -67,5 +67,12 @@ export const CourseList = styled.div`
 
 export const CourseListControls = styled.div`
   display: flex;
-  padding-right: 48px;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: space-between;
+  padding: 0 48px;
 `;
+
+export const ArrowsWrapper = styled.div`
+  display: flex;
+`

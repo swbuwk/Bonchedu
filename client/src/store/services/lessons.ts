@@ -10,11 +10,8 @@ export const lessonApi = createApi({
   endpoints: (builder) => ({
     getChapterLessons: builder.query<Lesson[], string>({
       query: (chapterId: string) => ({
-        url: "/lesson",
+        url: `api/Lessons/${chapterId}/lessons`,
         method: "GET",
-        params: {
-          chapterId,
-        },
       }),
       transformResponse: (response: Lesson[]) =>
         response.map((lesson) => ({
@@ -24,7 +21,7 @@ export const lessonApi = createApi({
     }),
     getLessonById: builder.query<Lesson, string>({
       query: (id: string) => ({
-        url: `/lesson/${id}`,
+        url: `api/Lessons/${id}`,
         method: "GET",
       }),
       transformResponse: (lesson: Lesson) => ({
@@ -34,10 +31,11 @@ export const lessonApi = createApi({
     }),
     addLesson: builder.mutation<Lesson, AddLessonRequest>({
       query: (data) => {
+        const { chapterId, ...formData } = data
         return {
-          url: "/lesson",
+          url: `api/Lessons/${chapterId}`,
           method: "POST",
-          data,
+          data: formData ,
         };
       },
     }),
@@ -45,8 +43,8 @@ export const lessonApi = createApi({
       query: (dataWithId) => {
         const { id, ...data } = dataWithId
         return {
-          url: `/lesson/${id}`,
-          method: "PATCH",
+          url: `api/Lessons/${id}`,
+          method: "PUT",
           data,
         };
       },

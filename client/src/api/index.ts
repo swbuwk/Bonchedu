@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export const Endpoints = {
-  api: "http://localhost:5000/",
-  files: "http://localhost:5000/files/"
+  api: "https://bonchapi.hoa7mlishe.com/",
+  files: "https://bonchapi.hoa7mlishe.com/files"
 }
 
 export const api = axios.create({
@@ -10,7 +10,7 @@ export const api = axios.create({
 })
 
 api.interceptors.request.use(function (config) {
-    const token = localStorage.getItem("access_token")
+    const token = localStorage.getItem("accessToken")
     config.headers.Authorization = `Bearer ${token}`
     return config;
   }, function (error) {

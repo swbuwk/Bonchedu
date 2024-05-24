@@ -11,5 +11,5 @@ export interface Chapter {
   entityType: EntityType.chapter;
   lessonsCount: number;
   progress?: number;
-  position: number;
+  number: number;
 }

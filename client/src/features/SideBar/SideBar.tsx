@@ -12,18 +12,20 @@ import {
   SidebarInner,
 } from "./styles";
 import Navigation from "./components/Navigation";
+import { useNavigate } from "react-router-dom";
 
 export const SideBar = () => {
   const { user } = useProfile();
+  const navigate = useNavigate()
   const { level, expLeft, expToNextLevel } = getLevel(user.expirience);
 
   return (
     <SideBarWrapper>
       <ContentBlock h="100%" w="100%" padding="16px">
         <SidebarInner>
-          <ProfileInfoWrapper>
+          <ProfileInfoWrapper onClick={() => navigate(`/user/${user.id}`)}>
             <ProfileAvatar>
-              {user.avatarImage && <img src={user.avatarImage} />}
+              {user.avatarID !== "00000000-0000-0000-0000-000000000000" && <img src={user.avatarID} />}
             </ProfileAvatar>
             <ProfileInfo>
               <ProfileName>{user.username}</ProfileName>

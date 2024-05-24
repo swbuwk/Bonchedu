@@ -16,6 +16,7 @@ export const SidebarInner = styled.div`
 `
 
 export const ProfileInfoWrapper = styled.div`
+    cursor: pointer;
     display: flex;
     gap: 16px;
 `

@@ -4,6 +4,7 @@ import { Colors } from "../../constants/Colors";
 export const InputWrapper = styled.div<{
     fullWidth?: boolean;
     boxShadow?: boolean;
+    height?: string | number;
     fs?: string
 }>`
     width: ${p => p.fullWidth ? "100%" : "auto"};

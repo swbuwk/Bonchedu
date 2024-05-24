@@ -2,7 +2,7 @@
 // 1 - 3 lvl +100xp
 // 4 - 5 lvl +250xp
 // 6 - 10 lvl +500xp
-// 10 - 20 lvl +1000xp
+// 10 - ... lvl +1000xp
 
 export const LEVEL_DISTRIBUTION = [
   {level: 1, exp: 100},

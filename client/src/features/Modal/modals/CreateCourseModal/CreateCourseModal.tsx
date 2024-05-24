@@ -39,7 +39,7 @@ export const CreateCourseModal: FC<CreateCourseModalProps> = ({ }) => {
   const [addCourse] = useAddCourseMutation()
   const [getCourses] = useLazyGetCoursesQuery()
   const handleSubmit = (values: AddCourseFormValues) => {
-    addCourse({ ...values, file: image }).then(() => {
+    addCourse({ ...values, cover: image }).then(() => {
       getCourses(undefined)
       modal.close()
       toasts.success("Курс успешно создан")

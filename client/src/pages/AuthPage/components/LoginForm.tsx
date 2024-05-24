@@ -7,19 +7,19 @@ import { useMemo } from "react";
 import { useProfile } from "../../../hooks/useProfile";
 
 const loginSchema = object({
-  login: string().email("Невалидный адрес электронной почты"),
+  username: string(),
   password: string().max(32, "Пароль слишком длинный"),
 });
 
 interface LoginFormValues extends InferType<typeof loginSchema> {}
 
 enum loginFormFields {
-  login = "login",
+  username = "username",
   password = "password",
 }
 
 const loginFormInit: LoginFormValues = {
-  [loginFormFields.login]: "",
+  [loginFormFields.username]: "",
   [loginFormFields.password]: "",
 };
 
@@ -51,12 +51,12 @@ const LoginForm = () => {
     <ContentWrapper onSubmit={formik.handleSubmit}>
       <InputList>
         <Input
-          id={loginFormFields.login}
+          id={loginFormFields.username}
           required
-          value={formik.values.login}
+          value={formik.values.username}
           onChange={formik.handleChange}
-          onClick={() => formik.setFieldTouched(loginFormFields.login)}
-          error={formik.touched.login ? formik.errors.login : ""}
+          onClick={() => formik.setFieldTouched(loginFormFields.username)}
+          error={formik.touched.username ? formik.errors.username : ""}
           label="Логин"
         />
         <Input

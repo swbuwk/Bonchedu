@@ -14,6 +14,7 @@ export const UserBlockWrapper = styled.div`
 `
 
 export const UserBlockLeft = styled.div`
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 16px;

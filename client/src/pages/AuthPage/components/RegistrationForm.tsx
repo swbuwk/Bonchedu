@@ -8,7 +8,7 @@ import { useProfile } from "../../../hooks/useProfile";
 
 const registrationSchema = object({
   username: string().min(2, "Слишком короткий псведоним"),
-  login: string().email("Невалидный адрес электронной почты"),
+  // login: string().email("Невалидный адрес электронной почты"),
   password: string()
     .min(8, "Пароль слишком короткий")
     .max(32, "Пароль слишком длинный"),
@@ -32,7 +32,7 @@ enum RegFormFields {
 
 const registrationFormInit: RegistrationFormValues = {
   [RegFormFields.username]: "",
-  [RegFormFields.login]: "",
+  // [RegFormFields.login]: "",
   [RegFormFields.password]: "",
   [RegFormFields.passwordRepeat]: "",
 };
@@ -40,8 +40,9 @@ const registrationFormInit: RegistrationFormValues = {
 const RegistrationForm = () => {
   const profile = useProfile();
   const handleSubmit = async (values: RegistrationFormValues) => {
+    const { passwordRepeat, ...formData } = values
     try {
-      await profile.registration(values as Required<RegistrationFormValues>);
+      await profile.registration(formData as Required<RegistrationFormValues>);
     } catch (e) {
       formik.validateForm();
     }
@@ -74,7 +75,7 @@ const RegistrationForm = () => {
           label="Псевдоним"
           placeholder="John"
         />
-        <Input
+        {/* <Input
           id={RegFormFields.login}
           required
           value={formik.values.login}
@@ -83,7 +84,7 @@ const RegistrationForm = () => {
           error={formik.touched.login ? formik.errors.login : ""}
           label="Логин"
           placeholder="example@mail.ru"
-        />
+        /> */}
         <Input
           id={RegFormFields.password}
           required

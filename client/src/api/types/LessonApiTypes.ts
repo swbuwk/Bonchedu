@@ -1,9 +1,8 @@
 export interface AddLessonRequest {
   name: string;
-  expirience: number;
-  difficulty: number;
+  expirienceGain: number;
+  difficulty: string;
   chapterId: string;
-  courseId: string;
 }
 
 export interface UpdateLessonRequest extends AddLessonRequest {

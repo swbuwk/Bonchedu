@@ -2,7 +2,7 @@ import { useCallback } from "react"
 import { SignInRequest, SignUpRequest } from "../api/types/UserApiTypes"
 import { getProfile, setGuardErrorVisibility, signIn, signOut, signUp } from "../store/slices/profileSlice"
 import { useAppDispatch, useAppSelector } from "./redux"
-import { RoleName } from "../api/types/entities/Role"
+import { Role } from "../api/types/entities/Role"
 import { courseApi } from "../store/services/course"
 import { lessonApi } from "../store/services/lessons"
 import { userApi } from "../store/services/user"
@@ -44,8 +44,8 @@ export const useProfile = () => {
     return dispatch(setGuardErrorVisibility(true))
   }
 
-  const hasRole = useCallback((roleName: RoleName) => {
-    return profile.user.roles.some(role => role.name === roleName)
+  const hasRole = useCallback((role: Role) => {
+    return profile.user.role === role
   }, [profile.user])
 
   return {

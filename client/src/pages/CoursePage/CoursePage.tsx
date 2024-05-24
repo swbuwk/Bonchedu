@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { Endpoints } from "../../api";
 import ContentBlock from "../../components/ContentBlock";
 import { useGetCourseByIdQuery } from "../../store/services/course";
-import { CourseImagePreview, CourseListControls } from "../ExplorePage/styles";
+import { ArrowsWrapper, CourseImagePreview, CourseListControls } from "../ExplorePage/styles";
 import {
   ChapterList,
   CourseContentWrapper,
@@ -19,15 +19,16 @@ import Carousel from "../../components/Carousel";
 import { Chapter } from "../../api/types/entities/Chapter";
 import { EntityType } from "../../api/types/EntityType";
 import { useProfile } from "../../hooks/useProfile";
-import { RoleName } from "../../api/types/entities/Role";
+import { Role } from "../../api/types/entities/Role";
 import { useGetCourseChaptersQuery } from "../../store/services/chapter";
+import Button from "../../components/Button";
 
 export const CoursePage = () => {
   const { id: courseId } = useParams<{ id: string }>();
   const profile = useProfile();
   const { data: course } = useGetCourseByIdQuery(courseId ?? "");
   const { data: chapters } = useGetCourseChaptersQuery(courseId ?? "");
-  const isOwner = profile.hasRole(RoleName.ADMIN) || (profile.hasRole(RoleName.TEACHER) && profile.user.id === course?.authorId);
+  const isOwner = profile.hasRole(Role.admin) || (profile.hasRole(Role.teacher) && profile.user.id === course?.authorId);
   
   const [page, setPage] = useState(0);
 
@@ -53,20 +54,23 @@ export const CoursePage = () => {
           </CourseText>
           <ChapterList>
             <CourseListControls>
-              <ArrowLeft
-                fill={page > 0 ? Colors.blue : Colors.gray}
-                pointer={page > 0}
-                w="48px"
-                h="48px"
-                onClick={() => setPage((p) => (p !== 0 ? p - 1 : p))}
-              />
-              <ArrowRight
-                fill={page < maxPages - 1 ? Colors.blue : Colors.gray}
-                pointer={page < maxPages - 1}
-                w="48px"
-                h="48px"
-                onClick={() => setPage((p) => (p !== maxPages - 1 ? p + 1 : p))}
-              />
+              <Button>Начать курс</Button>
+              <ArrowsWrapper>
+                <ArrowLeft
+                  fill={page > 0 ? Colors.blue : Colors.gray}
+                  pointer={page > 0}
+                  w="48px"
+                  h="48px"
+                  onClick={() => setPage((p) => (p !== 0 ? p - 1 : p))}
+                />
+                <ArrowRight
+                  fill={page < maxPages - 1 ? Colors.blue : Colors.gray}
+                  pointer={page < maxPages - 1}
+                  w="48px"
+                  h="48px"
+                  onClick={() => setPage((p) => (p !== maxPages - 1 ? p + 1 : p))}
+                />
+              </ArrowsWrapper>
             </CourseListControls>
             {chapters && (
               <Carousel

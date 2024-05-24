@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { apiBaseQuery } from "../../api/baseQuery";
-import { Friend, User } from "../../api/types/entities/User";
+import { Friend, FriendRequest, User } from "../../api/types/entities/User";
 import { AddRoleRequest, RemoveRoleRequest } from "../../api/types/UserApiTypes";
 
 export const userApi = createApi({
@@ -9,43 +9,55 @@ export const userApi = createApi({
     endpoints: (builder) => ({
         searchUsers: builder.query<Friend[], string>({
             query: (search) => ({
-                url: "/user",
+                url: "api/Users/search",
                 method: "GET",
                 params: {
-                    search
+                    pattern: search
+                }
+            })
+        }),
+        getUserById: builder.query<User, string>({
+            query: (userId) => ({
+                url: `api/Users/${userId}`,
+                method: "GET",
+            })
+        }),
+        updatePersonalInfo: builder.mutation<null, string>({
+            query: (personalInfo) => ({
+                url: `api/Users`,
+                method: "PUT",
+                data: {
+                    personalInfo
                 }
             })
         }),
         getRating: builder.query<User[], undefined>({
             query: () => ({
-                url: "/user/rating",
+                url: "api/Users/leaderboard",
                 method: "GET"
             })
         }),
         getFriends: builder.query<Friend[], undefined>({
             query: () => ({
-                url: "/user/friend",
+                url: "api/Users/friends",
                 method: "GET"
             })
         }),
-        getFriendRequests: builder.query<Friend[], string>({
-            query: (type) => ({
-                url: "/user/friend/requests",
+        getFriendRequests: builder.query<FriendRequest[], boolean>({
+            query: (incoming) => ({
+                url: "api/Users/friends/requests",
                 method: "GET",
                 params: {
-                    type
+                    incoming
                 }
             })
         }),
         sendFriendRequest: builder.mutation<Friend[], string>({
             query: (userId) => ({
-                url: `/user/friend/send-request/${userId}`,
-                method: "POST"
-            })
-        }),
-        approveFriendRequest: builder.mutation<Friend[], string>({
-            query: (requestId) => ({
-                url: `/user/friend/approve-request/${requestId}`,
+                url: `api/Users/friends/requests/send`,
+                params: {
+                    userId,
+                },
                 method: "POST"
             })
         }),
@@ -75,8 +87,10 @@ export const {
     useLazyGetFriendsQuery,
     useLazyGetFriendRequestsQuery,
     useSendFriendRequestMutation,
-    useApproveFriendRequestMutation,
     useAddRoleMutation,
     useRemoveRoleMutation,
-    useLazySearchUsersQuery
+    useLazySearchUsersQuery,
+    useGetUserByIdQuery,
+    useLazyGetUserByIdQuery,
+    useUpdatePersonalInfoMutation
 } = userApi

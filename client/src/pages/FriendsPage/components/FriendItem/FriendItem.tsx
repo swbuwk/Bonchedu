@@ -1,13 +1,16 @@
 import { FC, useMemo } from 'react'
-import { Friend } from '../../../../api/types/entities/User'
+import { Friend, FriendStatus } from '../../../../api/types/entities/User'
 import { UserAvatar, UserInfokName, UserItemLeft, UserItemRight, UserItemWrapper } from './styles'
 import { useProfile } from '../../../../hooks/useProfile'
 import Button from '../../../../components/Button'
-import { useAddRoleMutation, useApproveFriendRequestMutation, useRemoveRoleMutation, useSendFriendRequestMutation } from '../../../../store/services/user'
+import { useAddRoleMutation, useRemoveRoleMutation, useSendFriendRequestMutation } from '../../../../store/services/user'
 import { useToasts } from '../../../../hooks/useToasts'
-import { RoleName } from '../../../../api/types/entities/Role'
+import { Role, RoleName } from '../../../../api/types/entities/Role'
 import Dropdown from '../../../../components/Dropdown'
 import { DropdownButtonTarget } from '../../../../components/Dropdown/DropdownButtonTarget'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { FRIENDS_TABS } from '../../FriendsPage'
+import { getFriendButtonStatus } from '../../../../utils/getFriendButtonStatus'
 
 interface FriendItemProps {
   friend: Friend
@@ -15,42 +18,41 @@ interface FriendItemProps {
 }
 
 export const FriendItem: FC<FriendItemProps> = ({friend, refetch}) => {
+  let [searchTab] = useSearchParams();
   const profile = useProfile()
-  const isAdmin = profile.hasRole(RoleName.ADMIN)
+  const isAdmin = profile.hasRole(Role.admin)
   const toasts = useToasts()
+  const navigate = useNavigate()
   const [sendFriendRequest] = useSendFriendRequestMutation()
-  const [approveFriendRequest] = useApproveFriendRequestMutation()
   const [addRole] = useAddRoleMutation()
   const [removeRole] = useRemoveRoleMutation()
 
-  const isUserTeacher = friend?.roles?.find?.((role) => role.name === RoleName.TEACHER)
-  const isUserAdmin = friend?.roles?.find?.((role) => role.name === RoleName.ADMIN)
+  const tab: FRIENDS_TABS = useMemo(() => (searchTab?.get("tab") as FRIENDS_TABS || FRIENDS_TABS.friends), [searchTab])
+
+  const isUserTeacher = friend?.role === Role.teacher
+  const isUserAdmin = friend?.role === Role.admin
 
   const buttonStatus = useMemo(() => {
-    if (friend.approved === null) return "Добавить в друзья"
-    if (friend.approved === false) {
-      if (friend.receiverId === friend.id) return "Заявка отправлена"
-      return "Принять заявку"
-    }
-    return "В друзьях"
+    if (tab == FRIENDS_TABS.sent) return "Заявка отправлена"
+    if (tab == FRIENDS_TABS.received) return "Принять заявку"
+    if (tab == FRIENDS_TABS.friends) return "В друзьях"
+
+    return getFriendButtonStatus(friend.friendStatus)
   }, [friend])
 
   const buttonDisabled = useMemo(() => {
-    return friend.approved === true || (friend.approved === false && friend.creatorId === profile.user.id)
+    return tab == FRIENDS_TABS.friends || tab === FRIENDS_TABS.sent || 
+    friend.friendStatus === FriendStatus.friends || friend.friendStatus === FriendStatus.sent
   }, [friend])
 
   const handleButtonClick = async () => {
-    if (friend.approved === null) {
-      await sendFriendRequest(friend.id)
-      await refetch()
+    await sendFriendRequest(friend.id)
+    await refetch()
+    if (friend.friendStatus === FriendStatus.none) {
       toasts.success("Заявка отправлена")
-      return
     }
-    if (friend.approved === false && friend.receiverId === profile.user.id) {
-      await approveFriendRequest(friend.requestId)
-      await refetch()
+    if (friend.friendStatus === FriendStatus.received) {
       toasts.success("Заявка принята")
-      return
     }
   }
 
@@ -80,7 +82,7 @@ export const FriendItem: FC<FriendItemProps> = ({friend, refetch}) => {
 
   return (
     <UserItemWrapper>
-      <UserItemLeft>
+      <UserItemLeft onClick={() => navigate(`/user/${friend.id}`)}>
         <UserAvatar/> 
         <UserInfokName>{friend.username}</UserInfokName>
       </UserItemLeft>

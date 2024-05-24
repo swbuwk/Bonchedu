@@ -8,15 +8,15 @@ import { useDebouncedEffect } from "../../hooks/useDebouncedEffect";
 
 export enum FRIENDS_TABS {
   friends="friends",
-  inbox="inbox",
-  outbox="outbox",
+  received="received",
+  sent="sent",
   all="all"
 }
 
 const friendsTabs: Record<FRIENDS_TABS, string> = {
   [FRIENDS_TABS.friends]: "Друзья",
-  [FRIENDS_TABS.inbox]: "Входящие",
-  [FRIENDS_TABS.outbox]: "Исходящие",
+  [FRIENDS_TABS.received]: "Входящие",
+  [FRIENDS_TABS.sent]: "Исходящие",
   [FRIENDS_TABS.all]: "Поиск",
 }
 
@@ -33,8 +33,8 @@ export const FriendsPage = () => {
     if (tab === FRIENDS_TABS.friends) {
       getFriends(undefined)
     }
-    if ([FRIENDS_TABS.inbox, FRIENDS_TABS.outbox].includes(tab)) {
-      getFriendRequests(tab)
+    if ([FRIENDS_TABS.sent, FRIENDS_TABS.received].includes(tab)) {
+      getFriendRequests(tab === FRIENDS_TABS.received)
     }
   }, [tab])
 
@@ -62,9 +62,9 @@ export const FriendsPage = () => {
           <FriendItem key={friend.id} friend={friend} refetch={() => getFriends(undefined)}/>
         ))
       : <></>}
-      {[FRIENDS_TABS.inbox, FRIENDS_TABS.outbox].includes(tab) && requestUsers ? 
+      {[FRIENDS_TABS.sent, FRIENDS_TABS.received].includes(tab) && requestUsers ? 
         requestUsers.map(user => (
-          <FriendItem key={user.id} friend={user} refetch={() => getFriendRequests(tab)}/>
+          <FriendItem key={user.receiver.id} friend={user.receiver} refetch={() => getFriendRequests(tab === FRIENDS_TABS.received)}/>
         ))
       : <></>}
       {tab === FRIENDS_TABS.all && allUsers ? 

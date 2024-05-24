@@ -4,17 +4,25 @@ import { Role } from "./Role"
 export interface User {
   id: string
   username: string
-  login: string
   expirience?: number
-  info: string
-  roles: Role[]
-  avatarImage: string
+  personalInfo: string
+  role: Role
+  avatarID: string
   entityType: EntityType.user
 }
 
+export enum FriendStatus {
+  none="none",
+  sent="sent",
+  received="received",
+  friends="friends"
+}
+
 export interface Friend extends User {
-  approved: boolean
-  creatorId: string
-  receiverId: string
-  requestId: string
+  friendStatus: FriendStatus
+}
+
+export interface FriendRequest {
+  createdAt: string
+  receiver: Friend
 }

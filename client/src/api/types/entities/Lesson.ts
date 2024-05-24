@@ -7,7 +7,7 @@ export interface Lesson {
   difficulty: Difficulties;
   expirience: number;
   authorId: string
-  position: number;
+  number: number;
   chapter?: Chapter;
   chapterId: string;
   courseId: string;
@@ -16,9 +16,9 @@ export interface Lesson {
 }
 
 export enum Difficulties {
-  easy = 1,
-  medium = 2,
-  hard = 3
+  easy = "easy",
+  medium = "medium",
+  hard = "hard"
 }
 
 export const getDifficultyName = (diff: Difficulties) => {

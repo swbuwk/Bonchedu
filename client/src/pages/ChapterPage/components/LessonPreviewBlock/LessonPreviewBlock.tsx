@@ -10,7 +10,7 @@ import Button from "../../../../components/Button";
 import { useStartLessonMutation } from "../../../../store/services/lessons";
 import { useToasts } from "../../../../hooks/useToasts";
 import { useProfile } from "../../../../hooks/useProfile";
-import { RoleName } from "../../../../api/types/entities/Role";
+import { Role } from "../../../../api/types/entities/Role";
 import { EditIcon } from "../../../../assets/icons/EditIcon";
 import { useNavigate } from "react-router-dom";
 
@@ -27,7 +27,7 @@ export const LessonPreviewBlock: FC<LessonPreviewBlockProps> = ({ lesson, disabl
   const navigate = useNavigate()
   const [startLesson] = useStartLessonMutation()
   const [expanded, setExpanded] = useState<boolean>(false)
-  const isOwner = profile.hasRole(RoleName.ADMIN) || (profile.hasRole(RoleName.TEACHER) && profile.user.id === lesson?.authorId);
+  const isOwner = profile.hasRole(Role.admin) || (profile.hasRole(Role.teacher) && profile.user.id === lesson?.authorId);
 
   const handleLessonStart = async () => {
     let isError = false
@@ -56,7 +56,7 @@ export const LessonPreviewBlock: FC<LessonPreviewBlockProps> = ({ lesson, disabl
   return <LessonBlockOuter expanded={expanded}>
     <LessonBlockWrapper disabled={disabled}>
       <LessonLeftSide>
-        <LessonPosition>Занятие {lesson.position}:</LessonPosition>
+        <LessonPosition>Занятие {lesson.number + 1}:</LessonPosition>
         {lesson.name}
       </LessonLeftSide>
       <LessonRightSide>

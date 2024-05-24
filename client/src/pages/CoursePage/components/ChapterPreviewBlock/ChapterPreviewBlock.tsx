@@ -50,7 +50,7 @@ export const ChapterPreviewBlock: FC<ChapterPreviewBlockProps> = ({
       <ChapterCube />
       <ChapterInfo>
         <ChapterText>
-          <ChapterIndex>{beautifyPos(chapter.position)}</ChapterIndex>
+          <ChapterIndex>{beautifyPos(chapter.number)}</ChapterIndex>
           <ChapterTitle>{chapter.name}</ChapterTitle>
         </ChapterText>
         <ProgressBar

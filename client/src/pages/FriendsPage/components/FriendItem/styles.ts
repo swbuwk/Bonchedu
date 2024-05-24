@@ -14,6 +14,7 @@ export const UserItemWrapper = styled.div`
 `
 
 export const UserItemLeft = styled.div`
+  cursor: pointer;
   display: flex;
   align-items: flex-start;
   gap: 16px;

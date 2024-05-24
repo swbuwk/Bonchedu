@@ -2,18 +2,18 @@ import { RoleName } from "./entities/Role"
 import { User } from "./entities/User"
 
 export interface SignInRequest {
-  login: string
+  username: string
   password: string
 }
 
 export interface SignInResponse extends User {
-  access_token: string
+  tokens: {
+    accessToken: string
+    refreshToken: string
+  }
 }
 
-export interface SignUpRequest extends SignInRequest {
-  username: string
-  passwordRepeat: string
-}
+export interface SignUpRequest extends SignInRequest {}
 
 export interface SignUpResponse extends SignInResponse {}
 

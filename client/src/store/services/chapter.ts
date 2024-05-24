@@ -10,11 +10,8 @@ export const chapterApi = createApi({
   endpoints: (builder) => ({
     getCourseChapters: builder.query<Chapter[], string>({
       query: (courseId: string) => ({
-        url: "/chapter",
+        url: `/api/Chapters/${courseId}/chapters`,
         method: "GET",
-        params: {
-          courseId,
-        },
       }),
       transformResponse: (response: Chapter[]) =>
         response.map((Chapter) => ({
@@ -24,7 +21,7 @@ export const chapterApi = createApi({
     }),
     getChapterById: builder.query<Chapter, string>({
       query: (id: string) => ({
-        url: `/chapter/${id}`,
+        url: `api/Chapters/${id}`,
         method: "GET",
       }),
       transformResponse: (Chapter: Chapter) => ({
@@ -34,17 +31,22 @@ export const chapterApi = createApi({
     }),
     addChapter: builder.mutation<Chapter, AddChapterRequest>({
       query: (data) => {
+        const { courseId, ...formData } = data
+
         return {
-          url: "/chapter",
+          url: "api/Chapters",
           method: "POST",
-          data,
+          params: {
+            courseId
+          },
+          data: formData,
         };
       },
     }),
     deleteChapter: builder.mutation<Chapter, string>({
       query: (id) => {
         return {
-          url: `/chapter/${id}`,
+          url: `api/Chapters/${id}`,
           method: "DELETE",
         };
       },

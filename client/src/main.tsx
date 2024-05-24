@@ -13,6 +13,7 @@ import ExplorePage from "./pages/ExplorePage";
 import ChapterPage from "./pages/ChapterPage";
 import LessonEditPage from "./pages/LessonEditPage";
 import LessonPage from "./pages/LessonPage";
+import UserPage from "./pages/UserPage";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "/rating",
         element: <RatingPage />,
+      },
+      {
+        path: "/user/:id",
+        element: <UserPage />,
       },
     ],
   },

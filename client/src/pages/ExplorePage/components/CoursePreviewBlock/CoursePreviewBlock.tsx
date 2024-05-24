@@ -28,7 +28,7 @@ import { CrossIcon } from "../../../../assets/icons/CrossIcon";
 import { ConfirmModalProps } from "../../../../features/Modal/modals/ConfirmModal/ConfirmModal";
 import { useToasts } from "../../../../hooks/useToasts";
 import { useProfile } from "../../../../hooks/useProfile";
-import { RoleName } from "../../../../api/types/entities/Role";
+import { Role } from "../../../../api/types/entities/Role";
 
 export interface CoursePreviewBlockProps {
   course: Course;
@@ -46,7 +46,7 @@ export const CoursePreviewBlock: FC<CoursePreviewBlockProps> = ({
   const modal = useModal();
   const toasts = useToasts();
   const profile = useProfile()
-  const isOwner = profile.hasRole(RoleName.ADMIN) || (profile.hasRole(RoleName.TEACHER) && profile.user.id === course?.authorId);
+  const isOwner = profile.hasRole(Role.admin) || (profile.hasRole(Role.teacher) && profile.user.id === course?.authorId);
   const navigate = useNavigate();
   const [deleteCourse] = useDeleteCourseMutation();
   const [getCourses] = useLazyGetCoursesQuery();

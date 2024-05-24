@@ -17,12 +17,12 @@ import Carousel from "../../components/Carousel";
 import { EntityType } from "../../api/types/EntityType";
 import { Course } from "../../api/types/entities/Course";
 import { useProfile } from "../../hooks/useProfile";
-import { RoleName } from "../../api/types/entities/Role";
+import { Role } from "../../api/types/entities/Role";
 
 export const ExplorePage = () => {
   const { data: courses } = useGetCoursesQuery(undefined);
   const profile = useProfile();
-  const isAdminOrTeacher = profile.hasRole(RoleName.ADMIN) || profile.hasRole(RoleName.TEACHER);
+  const isAdminOrTeacher = profile.hasRole(Role.admin) || profile.hasRole(Role.teacher);
   const [topImage, setTopImage] = useState<string>("");
   const [page, setPage] = useState(0);
   const [courseColumns] = useState<number>(4);
