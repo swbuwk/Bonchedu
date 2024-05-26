@@ -11,4 +11,5 @@ export interface Course {
   chapterProgress: number;
   lessonsCount: number;
   chaptersCount: number;
+  started: boolean
 }

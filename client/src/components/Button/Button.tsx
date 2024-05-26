@@ -9,6 +9,7 @@ interface ButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonE
     whiteTheme?: boolean
     resizable?: boolean
     selected?: boolean
+    width?: number
     onClick?: () => void
 }
 
@@ -24,6 +25,7 @@ const ButtonWrapper = styled.button<{
     justify-content: center;
     border: none;
     padding: 12px 16px 8px;
+    height: fit-content;
     min-height: 40px;
 
     font-size: 18px;
@@ -52,7 +54,7 @@ const ButtonWrapper = styled.button<{
     `}
 `
 
-export const Button: FC<PropsWithChildren<ButtonProps>> = ({children, isLoading, disabled, selected, onClick, resizable, ...props}) => {
+export const Button: FC<PropsWithChildren<ButtonProps>> = ({children, isLoading, disabled, selected, onClick, resizable, width, ...props}) => {
   const buttonRef = useRef<HTMLButtonElement | null>(null)
   const [buttonWidth, setButtonWidth] = useState<number>(0)
 
@@ -62,6 +64,14 @@ export const Button: FC<PropsWithChildren<ButtonProps>> = ({children, isLoading,
   }, [buttonRef.current])
 
   return (
-    <ButtonWrapper disabled={disabled} selected={selected} onClick={onClick} ref={buttonRef} width={resizable ? 0 : buttonWidth} {...props}>{isLoading ? <Spinner/> : children}</ButtonWrapper>
+    <ButtonWrapper 
+      disabled={disabled} 
+      selected={selected} 
+      onClick={onClick} 
+      ref={buttonRef} 
+      width={width ? width : resizable ? 0 : buttonWidth} 
+      {...props}
+    >{isLoading ? <Spinner/> : children}
+    </ButtonWrapper>
   )
 }

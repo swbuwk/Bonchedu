@@ -3,6 +3,7 @@ export enum EntityType {
   chapter="chapter",
   lesson="lesson",
   role="role",
-  task="task",
-  user="user"
+  question="question",
+  user="user",
+  lessonmaterial="lessonmaterial"
 }

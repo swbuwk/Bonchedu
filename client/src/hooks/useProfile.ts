@@ -3,18 +3,10 @@ import { SignInRequest, SignUpRequest } from "../api/types/UserApiTypes"
 import { getProfile, setGuardErrorVisibility, signIn, signOut, signUp } from "../store/slices/profileSlice"
 import { useAppDispatch, useAppSelector } from "./redux"
 import { Role } from "../api/types/entities/Role"
-import { courseApi } from "../store/services/course"
-import { lessonApi } from "../store/services/lessons"
-import { userApi } from "../store/services/user"
-import { chapterApi } from "../store/services/chapter"
-import { taskApi } from "../store/services/task"
+import { boncheduApi } from "../store/api"
 
 const apis = [
-  courseApi,
-  chapterApi,
-  lessonApi,
-  userApi,
-  taskApi
+  boncheduApi
 ]
 
 export const useProfile = () => {

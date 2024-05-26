@@ -3,10 +3,10 @@ import { ProgressBarLine, ProgressBarWrapper, ProgressTooltip, ProgressedZone } 
 
 interface ProgressBarProps {
   progress: number;
-  full: number;
+  full?: number;
 }
 
-export const ProgressBar: FC<ProgressBarProps> = ({ progress, full }) => {
+export const ProgressBar: FC<ProgressBarProps> = ({ progress, full = 1 }) => {
   return (
     <ProgressBarWrapper>
       {full ? (

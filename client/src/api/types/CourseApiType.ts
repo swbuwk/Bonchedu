@@ -3,3 +3,7 @@ export interface AddCourseRequest {
   name: string
   description: string
 }
+
+export interface UpdateCourseRequest extends AddCourseRequest {
+  courseId: string
+}

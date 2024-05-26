@@ -82,7 +82,17 @@ export const AddCourseTitle = styled.div`
 
 export const CourseDeleteButton = styled.div`
   display: flex;
+  width: 100%;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   color: ${Colors.red};
+`
+
+export const CourseUpdateButton = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 `

@@ -97,3 +97,8 @@ export const AdditionalInfo = styled.div`
 export const AdditionalText = styled.div`
   font-size: 22px;
 `
+
+export const DraftText = styled.div`
+  color: ${Colors.gray};
+  font-size: 18px;
+`

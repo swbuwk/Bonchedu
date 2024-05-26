@@ -19,8 +19,8 @@ const initialState: Profile = {
     personalInfo: "",
     role: Role.student,
     username: "",
-    expirience: 0,
-    avatarID: "",
+    experience: 0,
+    avatarId: "",
     entityType: EntityType.user
   },
   loading: true,

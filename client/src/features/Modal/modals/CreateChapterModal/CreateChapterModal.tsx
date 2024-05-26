@@ -11,11 +11,8 @@ import {
 import { useModal } from "../../../../hooks/useModal";
 import { useToasts } from "../../../../hooks/useToasts";
 import { CreateChapterWrapper } from "./styles";
-import {
-  useAddChapterMutation,
-  useLazyGetCourseChaptersQuery,
-} from "../../../../store/services/chapter";
 import { useParams } from "react-router-dom";
+import { useAddChapterMutation } from "../../../../store/api";
 
 const addChapterSchema = object({
   name: string().required("Введите название"),
@@ -43,13 +40,11 @@ export const CreateChapterModal: FC<CreateChapterModalProps> = ({}) => {
   const modal = useModal();
   const toasts = useToasts();
   const [addChapter] = useAddChapterMutation();
-  const [getCourseChapters] = useLazyGetCourseChaptersQuery();
   
   const handleSubmit = (values: AddChapterFormValues) => {
     if (!courseId) return;
     addChapter({ ...values, courseId })
       .then(() => {
-        getCourseChapters(courseId);
         modal.close();
         toasts.success("Глава успешно создана");
       })

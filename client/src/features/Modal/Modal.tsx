@@ -14,6 +14,7 @@ import { CrossIcon } from "../../assets/icons/CrossIcon";
 import { ConfirmModal } from "./modals/ConfirmModal/ConfirmModal";
 import { CreateChapterModal } from "./modals/CreateChapterModal/CreateChapterModal";
 import { CreateLessonModal } from "./modals/CreateLessonModal/CreateLessonModal";
+import { UpdateAvatarModal } from "./modals/UpdateAvatarModal.tsx/UpdateAvatarModal";
 
 interface ModalConfig {
   title: string;
@@ -23,12 +24,14 @@ interface ModalConfig {
 const MODALS: Record<ModalName, ModalConfig> = {
   [ModalName.none]: { title: "", node: <></> },
   [ModalName.createCourse]: { title: "Создать курс", node: CreateCourseModal },
+  [ModalName.updateCourse]: { title: "Редактировать курс", node: CreateCourseModal },
   [ModalName.createChapter]: {
     title: "Создать главу",
     node: CreateChapterModal,
   },
   [ModalName.createLesson]: { title: "Создать занятие", node: CreateLessonModal },
   [ModalName.confirm]: { title: "Подтвердите действие", node: ConfirmModal },
+  [ModalName.updateAvatar]: { title: "Обновить фото профиля", node: UpdateAvatarModal }
 };
 
 export const Modal = () => {

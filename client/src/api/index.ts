@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const Endpoints = {
   api: "https://bonchapi.hoa7mlishe.com/",
-  files: "https://bonchapi.hoa7mlishe.com/files"
+  files: "https://bonchapi.hoa7mlishe.com/api/File/"
 }
 
 export const api = axios.create({

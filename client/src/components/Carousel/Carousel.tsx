@@ -87,6 +87,7 @@ export const Carousel: FC<CarouselProps> = ({
                   <CarouselItemWrapper w={columnW} key={chapter.id}>
                     <ChapterPreviewBlock
                       chapter={chapter as Chapter}
+                      z={items.length - (idx * columns * rows + idx2) + 1}
                       isAddButton={
                         idx * columns * rows + idx2 === items.length - 1 && allowedToAdd
                       }

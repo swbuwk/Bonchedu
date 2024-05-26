@@ -5,13 +5,15 @@ export interface Lesson {
   id: string;
   name: string;
   difficulty: Difficulties;
-  expirience: number;
+  gainedExperience: number;
   authorId: string
   number: number;
   chapter?: Chapter;
   chapterId: string;
   courseId: string;
-  completed?: boolean
+  started?: boolean
+  finalized: boolean
+  completed: boolean
   entityType: EntityType.lesson;
 }
 

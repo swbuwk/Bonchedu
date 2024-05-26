@@ -1,14 +1,14 @@
 import { styled } from "styled-components";
 import { Colors } from "../../../../constants/Colors";
 
-export const LessonTaskWrapper = styled.div`
+export const LessonQuestionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 40%;
 `;
 
-export const Question = styled.div`
+export const QuestionText = styled.div`
   font-size: 28px;
 `;
 
@@ -19,7 +19,7 @@ export const AnswersWrapper = styled.div`
   gap: 16px;
 `;
 
-export const TaskProgress = styled.div<{
+export const QuestionProgress = styled.div<{
   progress: number;
 }>`
   position: relative;
@@ -40,3 +40,15 @@ export const TaskProgress = styled.div<{
     border-radius: 3px;
   }
 `;
+
+export const QuestionImage = styled.div`
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  overflow: hidden;
+  
+  img {
+    display: block;
+    width: 100%;
+  }
+`

@@ -1,8 +1,20 @@
 import { styled } from "styled-components";
 import { Colors } from "../../../../constants/Colors";
 
-export const ChapterPreviewWrapper = styled.div`
+export const ChapterOverlay = styled.div`
+  position: absolute;
+  display: flex;
+  top: 16px;
+  right: 16px;
+  opacity: 0;
+  transition: opacity 0.2s; 
+`
+
+export const ChapterPreviewWrapper = styled.div<{
+  z?: number
+}>`
   cursor: pointer;
+  position: relative;
   display: flex;
   gap: 24px;
   padding: 16px;
@@ -10,8 +22,14 @@ export const ChapterPreviewWrapper = styled.div`
   background-color: #ffffff;
   transition: 0.2s;
 
+  z-index: ${p => p.z};
+
   &:hover {
     background-color: #cfd3e0;
+  }
+
+  &:hover ${ChapterOverlay} {
+    opacity: 1;
   }
 `;
 

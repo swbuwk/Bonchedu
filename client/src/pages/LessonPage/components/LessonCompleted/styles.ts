@@ -8,6 +8,7 @@ export const LessonCompletedWrapper = styled.div`
   width: 100%;
   height: 100%;
   gap: 24px;
+  margin-top: 200px;
 `;
 
 export const LessonCompletedTitle = styled.div`

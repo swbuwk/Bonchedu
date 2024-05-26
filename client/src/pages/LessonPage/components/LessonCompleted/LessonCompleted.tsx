@@ -6,14 +6,15 @@ import {
 } from "./styles";
 import Button from "../../../../components/Button";
 import { useNavigate } from "react-router-dom";
+import { LessonResultsResponse } from "../../../../api/types/LessonApiTypes";
 
 interface LessonCompletedProps {
-  precision: number;
   chapterId: string;
+  results?: LessonResultsResponse
 }
 
 export const LessonCompleted: FC<LessonCompletedProps> = ({
-  precision,
+  results,
   chapterId,
 }) => {
   const navigate = useNavigate();
@@ -25,7 +26,8 @@ export const LessonCompleted: FC<LessonCompletedProps> = ({
   return (
     <LessonCompletedWrapper>
       <LessonCompletedTitle>Занятие пройдено!</LessonCompletedTitle>
-      <Precision>Результат: {Math.round(precision * 100)}%</Precision>
+      <Precision>Результат: {Math.round(results?.score || 0)}%</Precision>
+      <Precision>Получено опыта: {results?.expDiff}</Precision>
       <Button onClick={handleGoToChapter}>Вернуться к занятиям</Button>
     </LessonCompletedWrapper>
   );

@@ -1,16 +1,21 @@
 import { ChangeEvent, FC, useState } from "react";
 import { ImageUploaderTitle, ImageUploaderWrapper } from "./styles";
 import { ImageIcon } from "../../assets/icons/ImageIcon";
+import { Endpoints } from "../../api";
+import { useToasts } from "../../hooks/useToasts";
 
 interface ImageUploaderProps {
   onUpload?: (image: Blob) => void;
-  uploadOnServer?: boolean;
+  resizableHeight?: boolean
+  defaultValue?: string
 }
 
 export const ImageUploader: FC<ImageUploaderProps> = ({
   onUpload,
-  // uploadOnServer,
+  resizableHeight,
+  defaultValue
 }) => {
+  const toasts = useToasts()
   const [image, setImage] = useState<{
     preview: string;
   }>({
@@ -25,8 +30,8 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
       return;
     }
 
-    if (e.target.files[0].type !== "image/jpeg") {
-      // setError("Недопустимый формат файла");
+    if (!["image/jpeg", "image/png", "image/gif"].includes(e.target.files[0].type)) {
+      toasts.error("Недопустимый формат файла");
       return;
     }
 
@@ -37,11 +42,15 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
   };
 
   return (
-    <ImageUploaderWrapper>
-      <ImageIcon />
-      <ImageUploaderTitle>Загрузите фото</ImageUploaderTitle>
+    <ImageUploaderWrapper resizableHeight={resizableHeight}>
+      {!image.preview && !defaultValue ? 
+        <>
+          <ImageIcon />
+          <ImageUploaderTitle>Загрузите фото</ImageUploaderTitle>
+        </> : <></>
+      }
       <input type="file" accept="image/jpeg" onChange={handleFileChange} />
-      {image.preview && <img src={image.preview} />}
+      {(image.preview || defaultValue) && <img src={image.preview || (Endpoints.files + defaultValue)} />}
     </ImageUploaderWrapper>
   );
 };

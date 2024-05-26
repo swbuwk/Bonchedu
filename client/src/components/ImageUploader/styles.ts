@@ -1,12 +1,15 @@
 import { styled } from "styled-components";
 import { Colors } from "../../constants/Colors";
 
-export const ImageUploaderWrapper = styled.div`
+export const ImageUploaderWrapper = styled.div<{
+  resizableHeight?: boolean
+}>`
   position: relative;
   background-color: ${Colors.lightgray};
   border-radius: 15px;
   width: 100%;
-  height: 150px;
+  height: ${p => p.resizableHeight ? "100%" : "150px"};
+  min-height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,7 +17,7 @@ export const ImageUploaderWrapper = styled.div`
   gap: 16px;
 
   img {
-      position: absolute;
+      position: relative;
       width: 100%;
       height: 100%;
       object-fit: cover;

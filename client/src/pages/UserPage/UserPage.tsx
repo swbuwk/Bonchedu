@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
-import { useLazyGetUserByIdQuery, useUpdatePersonalInfoMutation } from "../../store/services/user";
 import Spinner from "../../components/Spinner";
-import { LevelName, PersonalInfoButtons, PersonalInfoOverlay, ProgressBarWrapper, RoleName, UserAvatarBig, UserHeader, UserLevel, UserPageWrapper, UserPersonalInfo, UserPersonalInfoTitle, UserPersonalInfoWrapper, UserTextInfo, Username } from "./styles";
+import { LevelName, PersonalInfoButtons, PersonalInfoOverlay, ProgressBarWrapper, RoleName, UpdateImageOverlay, UserAvatarBig, UserHeader, UserLevel, UserPageWrapper, UserPersonalInfo, UserPersonalInfoTitle, UserPersonalInfoWrapper, UserTextInfo, Username } from "./styles";
 import { getRoleName } from "../../utils/getRoleName";
 import ProgressBar from "../../components/ProgressBar";
 import { getLevel } from "../../utils/getLevel";
@@ -9,29 +8,37 @@ import ContentBlock from "../../components/ContentBlock";
 import Button from "../../components/Button";
 import { EditIcon } from "../../assets/icons/EditIcon";
 import { Input } from "../../components/Input/Input";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useToasts } from "../../hooks/useToasts";
+import { Endpoints } from "../../api";
+import { useProfile } from "../../hooks/useProfile";
+import { useModal } from "../../hooks/useModal";
+import { ModalName } from "../../store/slices/modalSlice";
+import { useGetUserByIdQuery, useUpdatePersonalInfoMutation } from "../../store/api";
 
 export const UserPage = () => {
   const toasts = useToasts()
+  const modal = useModal()
+  const profile = useProfile()
   const { id: userId } = useParams<{ id: string }>();
-  const [getUser, { data: user, isLoading: isUserLoading }] = useLazyGetUserByIdQuery()
+  const { data: user, isLoading: isUserLoading } = useGetUserByIdQuery(userId || "")
   const [updatePersonalInfo] = useUpdatePersonalInfoMutation()
-  const { level, expLeft, expToNextLevel } = getLevel(user?.expirience);
+  const { level, expLeft, expToNextLevel } = getLevel(user?.experience);
 
   const [editMode, setEditMode] = useState<boolean>(false)
   const [personalInfoValue, setPersonalInfoValue] = useState<string>("")
 
-  useEffect(() => {
-    getUser(userId || "").then(res => setPersonalInfoValue(res.data?.personalInfo || ""))
-  }, [userId])
-
   const handleSave = useCallback(async () => {
-    await updatePersonalInfo(personalInfoValue)
-    await getUser(userId || "")
+    await updatePersonalInfo({ personalInfo: personalInfoValue })
     toasts.success("Информация обновлена")
     setEditMode(false)
   }, [personalInfoValue, userId])
+
+  const handleUpdateAvatar = () => {
+    modal.open({
+      name: ModalName.updateAvatar,
+    })
+  }
 
   const handleBack = useCallback(() => {
     setPersonalInfoValue(user?.personalInfo || "")
@@ -43,7 +50,10 @@ export const UserPage = () => {
   return (
     <UserPageWrapper>
       <UserHeader>
-        <UserAvatarBig/>
+        <UserAvatarBig>
+          {userId === profile.user.id ? <UpdateImageOverlay onClick={handleUpdateAvatar}><EditIcon w="64px" h="64px" fill="#fff"/></UpdateImageOverlay> : <></>}
+          {user?.avatarId !== "00000000-0000-0000-0000-000000000000" && <img src={Endpoints.files + user?.avatarId} />}
+        </UserAvatarBig>
         <UserTextInfo>
           <Username>{user?.username}</Username>
           <RoleName>{getRoleName(user?.role)}</RoleName>

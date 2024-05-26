@@ -18,6 +18,7 @@ const GUARDED_ROUTES = [
   "/lessons",
   "/friends",
   "/rating",
+  "/user"
 ];
 
 export const MainPage: FC<PropsWithChildren> = () => {
@@ -31,7 +32,7 @@ export const MainPage: FC<PropsWithChildren> = () => {
   const isLessonEdit = !!useMatch("/lessons/:id/edit");
 
   const hideSideBar = isStartPage || isAuthPage || isLessonEdit || isLessonPage;
-  const disableStrcitHeight = isLessonEdit;
+  const disableStrcitHeight = isLessonEdit || isLessonPage;
 
   const isGuardedRoute = useMemo(
     () => GUARDED_ROUTES.some((route) => location.pathname.startsWith(route)),

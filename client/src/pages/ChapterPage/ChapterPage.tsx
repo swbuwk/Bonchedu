@@ -9,13 +9,12 @@ import {
 } from "./styles";
 import ContentBlock from "../../components/ContentBlock";
 import ProgressBar from "../../components/ProgressBar";
-import { useGetChapterByIdQuery } from "../../store/services/chapter";
 import { beautifyPos } from "../../utils/beutifyPosition";
-import { useGetChapterLessonsQuery } from "../../store/services/lessons";
 import LessonPreviewBlock from "./components/LessonPreviewBlock";
 import { Lesson } from "../../api/types/entities/Lesson";
 import { useProfile } from "../../hooks/useProfile";
 import { Role } from "../../api/types/entities/Role";
+import { useGetChapterByIdQuery, useGetChapterLessonsQuery } from "../../store/api";
 
 export const ChapterPage = () => {
   const profile = useProfile();

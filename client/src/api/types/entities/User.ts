@@ -4,10 +4,10 @@ import { Role } from "./Role"
 export interface User {
   id: string
   username: string
-  expirience?: number
+  experience?: number
   personalInfo: string
   role: Role
-  avatarID: string
+  avatarId: string
   entityType: EntityType.user
 }
 
@@ -24,5 +24,5 @@ export interface Friend extends User {
 
 export interface FriendRequest {
   createdAt: string
-  receiver: Friend
+  user: Friend
 }

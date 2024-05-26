@@ -3,7 +3,6 @@ import { Friend, FriendStatus } from '../../../../api/types/entities/User'
 import { UserAvatar, UserInfokName, UserItemLeft, UserItemRight, UserItemWrapper } from './styles'
 import { useProfile } from '../../../../hooks/useProfile'
 import Button from '../../../../components/Button'
-import { useAddRoleMutation, useRemoveRoleMutation, useSendFriendRequestMutation } from '../../../../store/services/user'
 import { useToasts } from '../../../../hooks/useToasts'
 import { Role, RoleName } from '../../../../api/types/entities/Role'
 import Dropdown from '../../../../components/Dropdown'
@@ -11,13 +10,14 @@ import { DropdownButtonTarget } from '../../../../components/Dropdown/DropdownBu
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { FRIENDS_TABS } from '../../FriendsPage'
 import { getFriendButtonStatus } from '../../../../utils/getFriendButtonStatus'
+import { Endpoints } from '../../../../api'
+import { useAddRoleMutation, useRemoveRoleMutation, useSendFriendRequestMutation } from '../../../../store/api'
 
 interface FriendItemProps {
   friend: Friend
-  refetch: () => void
 }
 
-export const FriendItem: FC<FriendItemProps> = ({friend, refetch}) => {
+export const FriendItem: FC<FriendItemProps> = ({friend}) => {
   let [searchTab] = useSearchParams();
   const profile = useProfile()
   const isAdmin = profile.hasRole(Role.admin)
@@ -47,11 +47,10 @@ export const FriendItem: FC<FriendItemProps> = ({friend, refetch}) => {
 
   const handleButtonClick = async () => {
     await sendFriendRequest(friend.id)
-    await refetch()
-    if (friend.friendStatus === FriendStatus.none) {
+    if (tab == FRIENDS_TABS.all) {
       toasts.success("Заявка отправлена")
     }
-    if (friend.friendStatus === FriendStatus.received) {
+    if (tab == FRIENDS_TABS.received) {
       toasts.success("Заявка принята")
     }
   }
@@ -63,7 +62,6 @@ export const FriendItem: FC<FriendItemProps> = ({friend, refetch}) => {
         userId: friend.id,
         roleName: RoleName.TEACHER
       })
-      refetch()
       toasts.success("Преподаватель разжалован")
       return
     }
@@ -71,7 +69,6 @@ export const FriendItem: FC<FriendItemProps> = ({friend, refetch}) => {
       userId: friend.id,
       roleName: RoleName.TEACHER
     })
-    refetch()
     toasts.success("Пользователь назначен преподавателем")
   }
 
@@ -83,7 +80,9 @@ export const FriendItem: FC<FriendItemProps> = ({friend, refetch}) => {
   return (
     <UserItemWrapper>
       <UserItemLeft onClick={() => navigate(`/user/${friend.id}`)}>
-        <UserAvatar/> 
+        <UserAvatar>
+          {friend?.avatarId !== "00000000-0000-0000-0000-000000000000" && <img src={Endpoints.files + friend?.avatarId} />}
+        </UserAvatar> 
         <UserInfokName>{friend.username}</UserInfokName>
       </UserItemLeft>
       <UserItemRight>

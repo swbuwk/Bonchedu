@@ -19,19 +19,19 @@ export const getExpToNextLevel = (level: number) => {
   return minExp
 } 
 
-export const getLevel = (expirience?: number) => {
+export const getLevel = (experience?: number) => {
   let level = 1;
   let expLeft = 0
   let expToNextLevel = 100
 
-  while (expirience && expirience > 0) {
+  while (experience && experience > 0) {
     expToNextLevel = getExpToNextLevel(level)
-    if (expirience >= expToNextLevel) {
+    if (experience >= expToNextLevel) {
       level++;
-      expirience -= expToNextLevel
+      experience -= expToNextLevel
     } else {
-      expLeft = expirience
-      expirience = 0
+      expLeft = experience
+      experience = 0
     }
   }
 

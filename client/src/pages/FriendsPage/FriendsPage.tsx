@@ -2,9 +2,9 @@ import { useSearchParams } from "react-router-dom";
 import { FriendsPageWrapper, FriendsTab, FriendsTabSwitcher, UserList } from "./styles";
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "../../components/Input/Input";
-import { useLazyGetFriendRequestsQuery, useLazyGetFriendsQuery, useLazySearchUsersQuery } from "../../store/services/user";
 import FriendItem from "./components/FriendItem";
 import { useDebouncedEffect } from "../../hooks/useDebouncedEffect";
+import { useLazyGetFriendRequestsQuery, useLazyGetFriendsQuery, useLazySearchUsersQuery } from "../../store/api";
 
 export enum FRIENDS_TABS {
   friends="friends",
@@ -39,6 +39,7 @@ export const FriendsPage = () => {
   }, [tab])
 
   useDebouncedEffect(() => {
+    if (search.length < 3) return
     searchUsers(search)
   }, [search], 700)
 
@@ -59,17 +60,17 @@ export const FriendsPage = () => {
     <UserList>
       {tab === FRIENDS_TABS.friends && friends ? 
         friends.map(friend => (
-          <FriendItem key={friend.id} friend={friend} refetch={() => getFriends(undefined)}/>
+          <FriendItem key={friend.id} friend={friend}/>
         ))
       : <></>}
       {[FRIENDS_TABS.sent, FRIENDS_TABS.received].includes(tab) && requestUsers ? 
-        requestUsers.map(user => (
-          <FriendItem key={user.receiver.id} friend={user.receiver} refetch={() => getFriendRequests(tab === FRIENDS_TABS.received)}/>
+        requestUsers.map(request => (
+          <FriendItem key={request.user.id} friend={request.user}/>
         ))
       : <></>}
       {tab === FRIENDS_TABS.all && allUsers ? 
         allUsers.map(user => (
-          <FriendItem key={user.id} friend={user} refetch={() => searchUsers(search)}/>
+          <FriendItem key={user.id} friend={user}/>
         ))
       : <></>}
     </UserList>

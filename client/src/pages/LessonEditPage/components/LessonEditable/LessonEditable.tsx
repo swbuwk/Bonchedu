@@ -6,12 +6,12 @@ import { useFormik } from "formik";
 import { Input } from "../../../../components/Input/Input";
 import RadioButton from "../../../../components/RadioButton";
 import { IRadioButtonItem } from "../../../../components/RadioButton/RadioButton";
-import { useLazyGetLessonByIdQuery, useUpdateLessonMutation } from "../../../../store/services/lessons";
 import { useDebouncedEffect } from "../../../../hooks/useDebouncedEffect";
+import { useLazyGetLessonByIdQuery, useUpdateLessonMutation } from "../../../../store/api";
 
 const addLessonSchema = object({
   name: string().required("Введите название"),
-  expirience: number().required("Введите количество опыта").moreThan(0, "Введите положительное число"),
+  gainedExperience: number().required("Введите количество опыта").moreThan(0, "Введите положительное число"),
   difficulty: number().required("Выберите сложность")
 });
 
@@ -19,7 +19,7 @@ const addLessonSchema = object({
 
 enum addLessonFormFields {
   name = "name",
-  expirience = "expirience",
+  gainedExperience = "expirienceGain",
   difficulty = "difficulty"
 }
 
@@ -38,8 +38,8 @@ export const LessonEditable: FC<LessonEditableProps> = ({ lesson }) => {
   const [getLesson] = useLazyGetLessonByIdQuery()
   const [getChapterLessons] = useLazyGetLessonByIdQuery()
 
-  const { name, expirience, difficulty } = lesson
-  const formInitital = { name, expirience, difficulty }
+  const { name, gainedExperience, difficulty } = lesson
+  const formInitital = { name, gainedExperience, difficulty }
 
   const formik = useFormik({
     initialValues: formInitital,
@@ -95,16 +95,17 @@ export const LessonEditable: FC<LessonEditableProps> = ({ lesson }) => {
         onClick={() => formik.setFieldTouched(addLessonFormFields.name)}
       />
       <Input
-        id={addLessonFormFields.expirience}
-        label="Количество опыта"
+        id={addLessonFormFields.gainedExperience}
+        disabled={lesson.finalized}
+        label="Количество опыта за ответ"
         required
-        value={formik.values.expirience}
-        error={formik.errors.expirience}
+        value={formik.values.gainedExperience}
+        error={formik.errors.gainedExperience}
         onChange={formik.handleChange}
         type="number"
         min={0}
         placeholder="30"
-        onClick={() => formik.setFieldTouched(addLessonFormFields.expirience)}
+        onClick={() => formik.setFieldTouched(addLessonFormFields.gainedExperience)}
       />
       <RadioButton
         activeId={formik.values.difficulty}

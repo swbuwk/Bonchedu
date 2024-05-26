@@ -4,9 +4,9 @@ export const LessonPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  min-height: 80%;
   align-items: center;
-  padding-top: 200px;
+  margin: 60px 0;
   gap: 32px;
 `
 

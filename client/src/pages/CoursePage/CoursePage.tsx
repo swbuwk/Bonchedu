@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Endpoints } from "../../api";
 import ContentBlock from "../../components/ContentBlock";
-import { useGetCourseByIdQuery } from "../../store/services/course";
 import { ArrowsWrapper, CourseImagePreview, CourseListControls } from "../ExplorePage/styles";
 import {
   ChapterList,
@@ -20,15 +19,24 @@ import { Chapter } from "../../api/types/entities/Chapter";
 import { EntityType } from "../../api/types/EntityType";
 import { useProfile } from "../../hooks/useProfile";
 import { Role } from "../../api/types/entities/Role";
-import { useGetCourseChaptersQuery } from "../../store/services/chapter";
 import Button from "../../components/Button";
+import ProgressBar from "../../components/ProgressBar";
+import { useToasts } from "../../hooks/useToasts";
+import { useGetCourseByIdQuery, useGetCourseChaptersQuery, useStartCourseMutation } from "../../store/api";
 
 export const CoursePage = () => {
   const { id: courseId } = useParams<{ id: string }>();
+  const toasts = useToasts()
   const profile = useProfile();
   const { data: course } = useGetCourseByIdQuery(courseId ?? "");
   const { data: chapters } = useGetCourseChaptersQuery(courseId ?? "");
+  const [startCourse] = useStartCourseMutation()
   const isOwner = profile.hasRole(Role.admin) || (profile.hasRole(Role.teacher) && profile.user.id === course?.authorId);
+
+  const handleStartCourse = async () => {
+    await startCourse(courseId || "")
+    toasts.success(`Вы начали курс "${course?.name}"!`)
+  }
   
   const [page, setPage] = useState(0);
 
@@ -53,8 +61,11 @@ export const CoursePage = () => {
             <CourseDescription>{course?.description}</CourseDescription>
           </CourseText>
           <ChapterList>
-            <CourseListControls>
-              <Button>Начать курс</Button>
+            <CourseListControls courseStarted={course?.started}>
+              {course?.started ?
+                <ProgressBar progress={course.progress || 0} full={course.chaptersCount}/> : 
+                <Button width={250} onClick={handleStartCourse}>Начать курс</Button>
+              }
               <ArrowsWrapper>
                 <ArrowLeft
                   fill={page > 0 ? Colors.blue : Colors.gray}

@@ -3,9 +3,11 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 export enum ModalName {
   none = "none",
   createCourse = "createCourse",
+  updateCourse = "updateCourse",
   createChapter = "createChapter",
   createLesson = "createLesson",
   confirm = "confirm",
+  updateAvatar = "updateAvatar"
 }
 
 export interface EmptyModalProps {

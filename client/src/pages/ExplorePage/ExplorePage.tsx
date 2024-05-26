@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft } from "../../assets/icons/ArrowLeft";
 import { ArrowRight } from "../../assets/icons/ArrowRight";
 import ContentBlock from "../../components/ContentBlock";
-import { useGetCoursesQuery } from "../../store/services/course";
 import {
+  ArrowsWrapper,
   CourseImagePreview,
   CourseList,
   CourseListControls,
@@ -18,6 +18,7 @@ import { EntityType } from "../../api/types/EntityType";
 import { Course } from "../../api/types/entities/Course";
 import { useProfile } from "../../hooks/useProfile";
 import { Role } from "../../api/types/entities/Role";
+import { useGetCoursesQuery } from "../../store/api";
 
 export const ExplorePage = () => {
   const { data: courses } = useGetCoursesQuery(undefined);
@@ -47,20 +48,22 @@ export const ExplorePage = () => {
           <CourseListTitle>Курсы</CourseListTitle>
           <CourseList>
             <CourseListControls>
-              <ArrowLeft
-                fill={page > 0 ? Colors.blue : Colors.gray}
-                pointer={page > 0}
-                w="48px"
-                h="48px"
-                onClick={() => setPage((p) => (p !== 0 ? p - 1 : p))}
-              />
-              <ArrowRight
-                fill={page < maxPages - 1 ? Colors.blue : Colors.gray}
-                pointer={page < maxPages - 1}
-                w="48px"
-                h="48px"
-                onClick={() => setPage((p) => (p !== maxPages - 1 ? p + 1 : p))}
-              />
+              <ArrowsWrapper>
+                <ArrowLeft
+                  fill={page > 0 ? Colors.blue : Colors.gray}
+                  pointer={page > 0}
+                  w="48px"
+                  h="48px"
+                  onClick={() => setPage((p) => (p !== 0 ? p - 1 : p))}
+                />
+                <ArrowRight
+                  fill={page < maxPages - 1 ? Colors.blue : Colors.gray}
+                  pointer={page < maxPages - 1}
+                  w="48px"
+                  h="48px"
+                  onClick={() => setPage((p) => (p !== maxPages - 1 ? p + 1 : p))}
+                />
+              </ArrowsWrapper>
             </CourseListControls>
             {courses && (
               <Carousel

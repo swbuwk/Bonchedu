@@ -28,3 +28,20 @@ export const QuestionDivider = styled.div`
   height: 3px;
   background-color: ${Colors.lightgray};
 `
+
+export const LessonEditTabSwitcher = styled.div`
+  display: flex;
+  gap: 24px;
+`
+
+export const LessonEditTab = styled.div<{
+  active: boolean
+}>`
+  cursor: pointer;
+  font-size: 22px;
+  white-space: nowrap;
+  width: 110%;
+  text-align: center;
+  transition: 0.2s;
+  border-bottom: 2px solid ${p => p.active ? Colors.blue : Colors.gray};
+`

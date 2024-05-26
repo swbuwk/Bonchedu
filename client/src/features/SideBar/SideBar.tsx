@@ -13,11 +13,12 @@ import {
 } from "./styles";
 import Navigation from "./components/Navigation";
 import { useNavigate } from "react-router-dom";
+import { Endpoints } from "../../api";
 
 export const SideBar = () => {
   const { user } = useProfile();
   const navigate = useNavigate()
-  const { level, expLeft, expToNextLevel } = getLevel(user.expirience);
+  const { level, expLeft, expToNextLevel } = getLevel(user.experience);
 
   return (
     <SideBarWrapper>
@@ -25,7 +26,7 @@ export const SideBar = () => {
         <SidebarInner>
           <ProfileInfoWrapper onClick={() => navigate(`/user/${user.id}`)}>
             <ProfileAvatar>
-              {user.avatarID !== "00000000-0000-0000-0000-000000000000" && <img src={user.avatarID} />}
+              {user.avatarId !== "00000000-0000-0000-0000-000000000000" && <img src={Endpoints.files + user.avatarId} />}
             </ProfileAvatar>
             <ProfileInfo>
               <ProfileName>{user.username}</ProfileName>

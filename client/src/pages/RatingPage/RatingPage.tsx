@@ -1,4 +1,4 @@
-import { useGetRatingQuery } from "../../store/services/user";
+import { useGetRatingQuery } from "../../store/api";
 import UserBlock from "./components/UserBlock";
 import { RatingPageTitle, RatingPageWrapper } from "./styles";
 

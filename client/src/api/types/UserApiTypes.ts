@@ -23,3 +23,8 @@ export interface AddRoleRequest {
 }
 
 export interface RemoveRoleRequest extends AddRoleRequest {}
+
+export interface UpdateUserRequest {
+  personalInfo?: string
+  picture?: Blob
+}

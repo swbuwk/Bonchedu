@@ -8,15 +8,14 @@ import { useFormik } from "formik";
 import { Difficulties } from "../../../../api/types/entities/Lesson";
 import RadioButton from "../../../../components/RadioButton";
 import { IRadioButtonItem } from "../../../../components/RadioButton/RadioButton";
-import { useAddLessonMutation, useLazyGetChapterLessonsQuery } from "../../../../store/services/lessons";
 import { useToasts } from "../../../../hooks/useToasts";
 import { useModal } from "../../../../hooks/useModal";
-import { useLazyGetChapterByIdQuery } from "../../../../store/services/chapter";
 import { useParams } from "react-router-dom";
+import { useAddLessonMutation } from "../../../../store/api";
 
 const addLessonSchema = object({
   name: string().required("Введите название"),
-  expirienceGain: number().required("Введите количество опыта").moreThan(0, "Введите положительное число"),
+  gainedExperience: number().required("Введите количество опыта").moreThan(0, "Введите положительное число"),
   difficulty: string().required("Выберите сложность")
 });
 
@@ -24,13 +23,13 @@ interface AddLessonFormValues extends InferType<typeof addLessonSchema> {}
 
 enum addLessonFormFields {
   name = "name",
-  expirienceGain = "expirienceGain",
+  gainedExperience = "gainedExperience",
   difficulty = "difficulty"
 }
 
 const addLessonFormInit: AddLessonFormValues = {
   [addLessonFormFields.name]: "",
-  [addLessonFormFields.expirienceGain]: 0,
+  [addLessonFormFields.gainedExperience]: 0,
   [addLessonFormFields.difficulty]: Difficulties.medium,
 };
 
@@ -41,8 +40,6 @@ export interface CreateLessonModalProps extends SharedModalProps {
 export const CreateLessonModal: FC<CreateLessonModalProps> = () => {
   const { id: chapterId } = useParams<{ id: string }>()
   const [addLesson] = useAddLessonMutation()
-  const [getChapterLessons] = useLazyGetChapterLessonsQuery()
-  const [ getChapter ] = useLazyGetChapterByIdQuery()
   const toasts = useToasts()
   const modal = useModal()
 
@@ -51,8 +48,6 @@ export const CreateLessonModal: FC<CreateLessonModalProps> = () => {
     if (!chapterId) return
     addLesson({ ...values, chapterId })
       .then(() => {
-        getChapterLessons(chapterId);
-        getChapter(chapterId)
         modal.close();
         toasts.success("Занятие успешно создано");
       })
@@ -104,16 +99,16 @@ export const CreateLessonModal: FC<CreateLessonModalProps> = () => {
         onClick={() => formik.setFieldTouched(addLessonFormFields.name)}
       />
       <Input
-        id={addLessonFormFields.expirienceGain}
-        label="Количество опыта"
+        id={addLessonFormFields.gainedExperience}
+        label="Количество опыта за ответ"
         required
-        value={formik.values.expirienceGain}
-        error={formik.errors.expirienceGain}
+        value={formik.values.gainedExperience}
+        error={formik.errors.gainedExperience}
         onChange={formik.handleChange}
         type="number"
         min={0}
         placeholder="30"
-        onClick={() => formik.setFieldTouched(addLessonFormFields.expirienceGain)}
+        onClick={() => formik.setFieldTouched(addLessonFormFields.gainedExperience)}
       />
       <RadioButton
         activeId={formik.values.difficulty}

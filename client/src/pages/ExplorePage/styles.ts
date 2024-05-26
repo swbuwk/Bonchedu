@@ -65,11 +65,15 @@ export const CourseList = styled.div`
   align-items: flex-end;
 `;
 
-export const CourseListControls = styled.div`
+export const CourseListControls = styled.div<{
+  courseStarted?: boolean
+}>`
   display: flex;
   width: 100%;
   box-sizing: border-box;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: ${p => p.courseStarted ? "flex-end" : "space-between"};
+  gap: 24px;
   padding: 0 48px;
 `;
 

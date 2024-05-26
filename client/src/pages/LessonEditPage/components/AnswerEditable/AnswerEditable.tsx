@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { Answer } from "../../../../api/types/entities/Task";
+import { Answer } from "../../../../api/types/entities/Question";
 import {
   AddAnswerButton,
   AddAnswerTitle,
@@ -8,17 +8,11 @@ import {
 } from "./styles";
 import { PlusIcon } from "../../../../assets/icons/PlusIcon";
 import { Colors } from "../../../../constants/Colors";
-import {
-  useAddAnswerMutation,
-  useDeleteAnswerMutation,
-  useLazyGetLessonTasksQuery,
-  useSetRightAnswerMutation,
-  useUpdateAnswerMutation,
-} from "../../../../store/services/task";
 import { Input } from "../../../../components/Input/Input";
 import { CrossIcon } from "../../../../assets/icons/CrossIcon";
 import { useDebouncedEffect } from "../../../../hooks/useDebouncedEffect";
 import { CheckIcon } from "../../../../assets/icons/CheckIcon";
+import { useAddAnswerMutation, useDeleteAnswerMutation, useLazyGetLessonQuestionsQuery, useSetRightAnswerMutation, useUpdateAnswerMutation } from "../../../../store/api";
 
 interface AnswerEditableProps {
   answer: Answer;
@@ -39,7 +33,7 @@ export const AnswerEditable: FC<AnswerEditableProps> = ({
   const [deleteAnswer] = useDeleteAnswerMutation();
   const [updateAnswer] = useUpdateAnswerMutation();
   const [setRightAnswer] = useSetRightAnswerMutation();
-  const [getLessonTasks] = useLazyGetLessonTasksQuery();
+  const [getLessonQuestions] = useLazyGetLessonQuestionsQuery();
   const [answerText, setAnswerText] = useState<string>("");
 
   const handleAddAnswer = async () => {
@@ -47,12 +41,12 @@ export const AnswerEditable: FC<AnswerEditableProps> = ({
       taskId,
       text: "",
     });
-    getLessonTasks(lessonId);
+    getLessonQuestions(lessonId);
   };
 
   const handleDeleteAnswer = async () => {
     await deleteAnswer(answer.id);
-    getLessonTasks(lessonId);
+    getLessonQuestions(lessonId);
   };
 
   const handleAnswerUpdate = async () => {
@@ -61,7 +55,7 @@ export const AnswerEditable: FC<AnswerEditableProps> = ({
       id: answer.id,
       text: answerText,
     });
-    getLessonTasks(lessonId);
+    getLessonQuestions(lessonId);
   };
 
   const handleSetRightAnswer = async () => {
@@ -70,7 +64,7 @@ export const AnswerEditable: FC<AnswerEditableProps> = ({
       answerId: answer.id,
       taskId,
     });
-    getLessonTasks(lessonId);
+    getLessonQuestions(lessonId);
   };
 
   useEffect(() => {
